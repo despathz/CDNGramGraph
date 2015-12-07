@@ -31,8 +31,8 @@
 		    <overWriteIfNewer>true</overWriteIfNewer>
 		  </configuration>
 		</execution>
-    </executions>
-  </plugin>
+	    </executions>
+	  </plugin>
     </plugins>
   </build>
 </project>

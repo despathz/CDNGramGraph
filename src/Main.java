@@ -7,8 +7,7 @@ public class Main
     public static void main(String[] args) 
     {
     	 // The string we want to represent
-	   	 String sTmp = "Hello graph!";
-	   	 sTmp = "Never give up";
+	   	 String sTmp = "New graph!";
 	
 	   	 // The default document n-gram graph, with min n-gram size and max n-gram size set to 3, and the dist parameter set to 3.
 	   	DocumentNGramGraph dngGraph = new DocumentNGramGraph(); 
@@ -20,7 +19,7 @@ public class Main
         size) and renders it, using the utils package, as a DOT string */
         System.out.println(utils.graphToDot(dngGraph.getGraphLevel(0), true));
 	   	
-	   	System.out.println("Heyyyy Deppie :)" + sTmp);
+	   	
     }
 }
 
