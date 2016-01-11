@@ -3,10 +3,10 @@ import java.util.*;
 public class LocalSearch
 {
 	int edges, vertices;
-	Set <String> setEdges;
+	Map <String, String> setEdges;
 	Set <String> setVertices;
 	
-	public LocalSearch (int edg, int vert, Set<String> setE, Set<String> setV)  //constructor
+	public LocalSearch (int edg, int vert, Map<String, String> setE, Set<String> setV)  //constructor
 	{ 
 		edges = edg;
 		vertices = vert;
@@ -37,9 +37,7 @@ public class LocalSearch
 			arrLoc[newVar] = newVal; //change local array
 			if (isSolution(arrLoc))
 				break;
-		}
-		
-		System.out.println("so?");
+		}		
 		return arrLoc;
 	}
 	
@@ -52,6 +50,7 @@ public class LocalSearch
 	{
 		String[] arrLoc = new String[vertices]; 
 		Set <String> temp = setVertices;
+		Set <String> tempA = new HashSet<String>();
 		int total = vertices;
 		
 	       for(int i = 0; i < vertices; i++)
@@ -71,8 +70,9 @@ public class LocalSearch
 	    		arrLoc[i] = str;
 	    		total--;
 	    		temp.remove(str);
+	    		tempA.add(str);
 	    	}
-	       
+	       setVertices = tempA;
 //	       for (int i = 0; i < vertices; i++) //debugging
 //	       	System.out.print(arrLoc[i]);
 //	       System.out.println();
@@ -86,19 +86,21 @@ public class LocalSearch
 	 */
 	public String randomSelect()
 	{
-		int item = new Random().nextInt(vertices);  //select a variable
+		Set <String> temp = setVertices;
+		int total = vertices;
+		int item = new Random().nextInt(total);  //select a variable
 		int j = 0;
-    		String str = " ";
-    		for(String strT : setVertices)
-    		{
-    		    if (j == item)
-    		    {
-    			    str = strT;
-    			    break;
-    		    }
-    		    j = j + 1;
-    		}
-    		return str;
+		String str = "";
+		for(String strT : temp)
+		{
+			if (j == item)
+			{
+				str = strT;
+				break;
+			}
+			j = j + 1;
+		}
+		return str;
 	}
 	
 	/* 
@@ -125,8 +127,20 @@ public class LocalSearch
 			}
 		}
 		
-		//TODO: fourth constraint
-		
+		for (int i = 1; i < vertices; i++) //fourth constraint
+		{
+			if (!setEdges.containsKey(arr[i]))
+				return false;
+			for (Map.Entry<String, String> e : setEdges.entrySet()) 
+			{
+				if (arr[i] == e.getKey() ) //edge is correct
+				{
+					if (arr[i-1] != e.getValue() ) 
+						return false;
+					break;
+				}
+			}
+		}	
 		return true;
 	}
 	
