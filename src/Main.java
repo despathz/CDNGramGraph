@@ -29,8 +29,11 @@ public class Main
 		System.out.println(setVertices);
 
 		LocalSearch newsearch = new LocalSearch(total_edges, total_vertices, setEdges, setVertices); 
-		String result = newsearch.lsAlgorithm();
-		System.out.println(result); 
+		String[] result =  new String[total_vertices];
+		result = newsearch.lsAlgorithm();
+		for (int i = 0; i < total_vertices; i++)
+			System.out.print(result[i]);
+		System.out.println();
 
 		/* The following command gets the first n-gram graph level (with the minimum n-gram
 		size) and renders it, using the utils package, as a DOT string */
