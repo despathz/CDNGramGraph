@@ -25,6 +25,10 @@
 		    <goal>copy-dependencies</goal>
 		  </goals>
 		  <configuration>
+		    <mainClass>Main</mainClass>
+		    <arguments>
+		     <argument>"abcd"</argument>
+		    </arguments>
 		    <outputDirectory>${project.build.directory}/alternateLocation</outputDirectory>
 		    <overWriteReleases>false</overWriteReleases>
 		    <overWriteSnapshots>false</overWriteSnapshots>

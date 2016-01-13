@@ -26,15 +26,15 @@ public class LocalSearch
 	 * Extra:
 	 * 		- arrLoc[V] will be a local array of values indexed by V
 	 */
-	public String[] lsAlgorithm()
+	public List<String> lsAlgorithm()
 	{
-		String[] arrLoc = new String[vertices];
+		List<String> arrLoc= new ArrayList<String>();
 		arrLoc = randomInitialize(); 
 		while (!isSolution(arrLoc)) //the assignement is not a solution
 		{
-			int newVar = new Random().nextInt(vertices);  //select a variable newVar
+ 			int newVar = new Random().nextInt(vertices);  //select a variable newVar
 			String newVal = randomSelect();  //select a value newVal from the domain
-			arrLoc[newVar] = newVal; //change local array
+			arrLoc.set(newVar, newVal); //change local array
 			if (isSolution(arrLoc))
 				break;
 		}		
@@ -46,9 +46,9 @@ public class LocalSearch
 	 *  Initialize randomly all the variables
 	 *  A String array will be returned
 	 */
-	public String[] randomInitialize()
+	public List<String> randomInitialize()
 	{
-		String[] arrLoc = new String[vertices]; 
+		List<String> arrLoc = new ArrayList<String>();
 		Set <String> temp = setVertices;
 		Set <String> tempA = new HashSet<String>();
 		int total = vertices;
@@ -67,15 +67,12 @@ public class LocalSearch
 	    		    }
 	    		    j = j + 1;
 	    		}
-	    		arrLoc[i] = str;
+	    		arrLoc.add(str);
 	    		total--;
 	    		temp.remove(str);
 	    		tempA.add(str);
 	    	}
 	       setVertices = tempA;
-//	       for (int i = 0; i < vertices; i++) //debugging
-//	       	System.out.print(arrLoc[i]);
-//	       System.out.println();
 	       
 	       return arrLoc;
 	}
@@ -116,31 +113,46 @@ public class LocalSearch
 	 * 5. There are no other vertices and edges in the graph G but those that are described in
 	 *	the constraints (i) and (ii)
 	 */
-	public boolean isSolution(String[] arr)
+	public boolean isSolution(List<String> arr)
 	{
-		for (int i = 0; i < vertices; i++) //first constraint
+		int count = 0;
+		String strTemp = "";
+		
+		for(String str: arr) //first constraint
 		{
-			for (int j = 0; j < vertices; j++)
+			int countB = 0;
+			for(String nextstr: arr ) 
 			{
-				if ((arr[i] == arr[j]) && (i != j))
-					return false;
+				    if ((str == nextstr) && (count != countB))
+					    return false;    
+				    countB++;
 			}
+			count++;
 		}
 		
-		for (int i = 1; i < vertices; i++) //fourth constraint
+		count = 0;
+		for (String str: arr)
 		{
-			if (!setEdges.containsKey(arr[i]))
-				return false;
-			for (Map.Entry<String, String> e : setEdges.entrySet()) 
-			{
-				if (arr[i] == e.getKey() ) //edge is correct
+		      if (count == 0)
+			      count++;
+		      else
+		      {
+			      if(!setEdges.containsKey(str))
+				      return false;
+			      for (Map.Entry<String, String> e : setEdges.entrySet()) 
 				{
-					if (arr[i-1] != e.getValue() ) 
-						return false;
-					break;
+					if (str== e.getKey() ) //edge is correct
+					{
+						if (strTemp != e.getValue() ) 
+							return false;
+						break;
+					}
 				}
-			}
-		}	
+			      count++;
+		      }
+		      strTemp = str;
+		}
+		
 		return true;
 	}
 	
