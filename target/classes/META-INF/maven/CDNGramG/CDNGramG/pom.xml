@@ -15,31 +15,39 @@
         </configuration>
       </plugin>
 	<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-dependency-plugin</artifactId>
-	    <executions>
-		<execution>
-		  <id>copy-dependencies</id>
-		  <phase>package</phase>
-		  <goals>
-		    <goal>copy-dependencies</goal>
-		  </goals>
-		  <configuration>
-		    <mainClass>Main</mainClass>
-		    <arguments>
-		     <argument>"abcd"</argument>
-		    </arguments>
-		    <outputDirectory>${project.build.directory}/alternateLocation</outputDirectory>
-		    <overWriteReleases>false</overWriteReleases>
-		    <overWriteSnapshots>false</overWriteSnapshots>
-		    <overWriteIfNewer>true</overWriteIfNewer>
-		  </configuration>
-		</execution>
-	    </executions>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-dependency-plugin</artifactId>
+		    <executions>
+			<execution>
+			  <id>copy-dependencies</id>
+			  <phase>package</phase>
+			  <goals>
+			    <goal>copy-dependencies</goal>
+			  </goals>
+			  <configuration>
+			    <outputDirectory>${project.build.directory}/alternateLocation</outputDirectory>
+			    <overWriteReleases>false</overWriteReleases>
+			    <overWriteSnapshots>false</overWriteSnapshots>
+			    <overWriteIfNewer>true</overWriteIfNewer>
+			  </configuration>
+			</execution>
+		    </executions>
 	  </plugin>
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-dependency-plugin</artifactId>
+		<executions>
+			<execution>
+				<phase>package</phase>
+			</execution>
+		</executions>
+		<configuration>
+			<mainClass>Main</mainClass>
+		</configuration>
+	</plugin>
     </plugins>
   </build>
-  <properties>
+ <!--<properties>
   	<exec.mainClass>Main</exec.mainClass>
-  </properties>
+  </properties>-->
 </project>

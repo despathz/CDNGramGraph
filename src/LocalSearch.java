@@ -2,16 +2,21 @@ import java.util.*;
 
 public class LocalSearch
 {
-	int edges, vertices;
+	int edges, vertices, getAllAppearances, totalN;
 	Map <String, String> setEdges;
 	Set <String> setVertices;
+	Map<String, Double> weighted_degree;
+	Map<String, Integer> labelAppearance;
 	
-	public LocalSearch (int edg, int vert, Map<String, String> setE, Set<String> setV)  //constructor
+	public LocalSearch (int edg, int vert, Map<String, String> setE, Set<String> setV, Map<String, Double> w_d, Map<String, Integer> labelA, int tot)  //constructor
 	{ 
 		edges = edg;
 		vertices = vert;
 		setEdges = setE;
 		setVertices = setV;
+		weighted_degree = w_d;
+		labelAppearance = labelA;
+		totalN = tot;
 	}
 	
 	
@@ -29,7 +34,13 @@ public class LocalSearch
 	public List<String> lsAlgorithm()
 	{
 		List<String> arrLoc= new ArrayList<String>();
-		arrLoc = randomInitialize(); 
+		
+		arrLoc = randomInitialize(); 	
+		Iterator<String> it = arrLoc.iterator();
+    		while (it.hasNext())
+    			System.out.print(it.next());
+    		System.out.println(" done");
+    				
 		while (!isSolution(arrLoc)) //the assignement is not a solution
 		{
  			int newVar = new Random().nextInt(vertices);  //select a variable newVar
@@ -49,13 +60,12 @@ public class LocalSearch
 	public List<String> randomInitialize()
 	{
 		List<String> arrLoc = new ArrayList<String>();
-		Set <String> temp = setVertices;
-		Set <String> tempA = new HashSet<String>();
-		int total = vertices;
+		List <String> temp = createString();
+		int total = totalN;
 		
-	       for(int i = 0; i < vertices; i++)
+	       for(int i = 0; i < totalN; i++)
 	    	{
-	    		int item = new Random().nextInt(total); //pick value from the domain
+	    		int item = new Random().nextInt((int) total); //pick value from the domain
 	    		int j = 0;
 	    		String str = " ";
 	    		for(String strT : temp)
@@ -67,16 +77,41 @@ public class LocalSearch
 	    		    }
 	    		    j = j + 1;
 	    		}
+	    		temp.remove(str);
 	    		arrLoc.add(str);
 	    		total--;
-	    		temp.remove(str);
-	    		tempA.add(str);
+//	    		
+//	    		Iterator<String> it = temp.iterator();
+//	    		while (it.hasNext())
+//	    		{
+//	    			String s = it.next();
+//	    			if (s == str)
+//	    			{
+//	    				it.remove();
+//	    				break;
+//	    			}
+//	    		}
 	    	}
-	       setVertices = tempA;
 	       
 	       return arrLoc;
 	}
 	
+	public List <String> createString()
+	{
+		List <String> temp = new ArrayList<String>();
+		for (Map.Entry<String, Integer> e : labelAppearance.entrySet()) 
+    		{
+    			Integer i = e.getValue();
+    			getAllAppearances+= i;
+    			for (int j = 0; j < i; j++)
+    				temp.add(e.getKey());
+    		}
+//		for (String s : temp)
+//			System.out.println(" ~ " + s);
+//		System.out.println(getAllAppearances);
+		return temp;
+	}
+
 	
 	/*
 	 * Randomly select a value from the domain

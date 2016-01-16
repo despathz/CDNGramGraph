@@ -11,8 +11,9 @@ public class Main
 	{
 		// The string we want to represent
 		//String sTmp = args[0];
-		String sTmp = "abcd";
+		String sTmp = "mioum";
 		System.out.println("Given string: " + sTmp);
+		int totaln = sTmp.length();
 
 		 // Min n-gram size and max n-gram size set to 1, and the dist parameter set to 1.
 		DocumentNGramGraph dngGraph = new DocumentNGramGraph(1, 1, 1); 
@@ -25,16 +26,39 @@ public class Main
 
 		java.util.Iterator iIter = dngGraph.getGraphLevel(0).getEdgeSet().iterator();
 		Map<String, String> setEdges = new HashMap<String, String>();
+		Map<String, Double> weighted_degree = new HashMap<String, Double>();
+		Map<String, Integer> labelAppearance = new HashMap<String, Integer>();
 		while (iIter.hasNext())
 		{
 			WeightedEdge weCurItem = (WeightedEdge)iIter.next();
 			String sHead = weCurItem.getVertexA().getLabel();
 			String sTail = weCurItem.getVertexB().getLabel();
+			Double degree = weCurItem.getWeight();
 			setEdges.put(sHead, sTail);
+			weighted_degree.put(sHead, degree);
+			if (labelAppearance.containsKey(sHead))
+			{
+				labelAppearance.put(sHead, labelAppearance.get(sHead)+1);
+			}
+			else
+				labelAppearance.put(sHead, 1);
+			if (labelAppearance.containsKey(sTail))
+			{
+				labelAppearance.put(sTail, labelAppearance.get(sTail)+1);
+			}
+			else
+				labelAppearance.put(sTail, 1);
+			
 		}
+		 for (Map.Entry<String, String> e : setEdges.entrySet()) 
+			System.out.print(e.getKey() + e.getValue() +  ", ");
+		 for (Map.Entry<String, Double> e : weighted_degree.entrySet()) 
+				System.out.print(e.getKey() + e.getValue() +  " - ");
+		 for (Map.Entry<String, Integer> e : labelAppearance.entrySet()) 
+				System.out.print(e.getKey() + e.getValue() +  " - ");
 		Set <String> setVertices = dngGraph.getGraphLevel(0).UniqueVertices.keySet(); //set of vertices
 		
-		LocalSearch newsearch = new LocalSearch(total_edges, total_vertices, setEdges, setVertices); 
+		LocalSearch newsearch = new LocalSearch(total_edges, total_vertices, setEdges, setVertices, weighted_degree, labelAppearance, totaln); 
 		//String[] result =  new String[total_vertices];
 		List <String> result = new ArrayList<String>();
 		
