@@ -153,16 +153,15 @@ public class LocalSearch
 		int count = 0;
 		String strTemp = "";
 		
-		for(String str: arr) //first constraint
+		/*
+		 * 1. Every label l ∈ L(V ) should appear at least once in S. 
+		 */
+		Set<String> myset = labelAppearance.keySet();
+		Iterator<String> it = myset.iterator();
+		while (it.hasNext())
 		{
-			int countB = 0;
-			for(String nextstr: arr ) 
-			{
-				    if ((str == nextstr) && (count != countB))
-					    return false;    
-				    countB++;
-			}
-			count++;
+			if (!arr.contains(it.next()))
+				return false;
 		}
 		
 		count = 0;
