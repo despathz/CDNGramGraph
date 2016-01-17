@@ -1,14 +1,15 @@
 import java.util.*;
+import java.util.Map.Entry;
 
 public class LocalSearch
 {
 	int edges, vertices, getAllAppearances, totalN;
 	Map <String, String> setEdges;
 	Set <String> setVertices;
-	Map<String, Double> weighted_degree;
+	Map<Map<String, String>, Double> weighted_degree;
 	Map<String, Integer> labelAppearance;
 	
-	public LocalSearch (int edg, int vert, Map<String, String> setE, Set<String> setV, Map<String, Double> w_d, Map<String, Integer> labelA, int tot)  //constructor
+	public LocalSearch (int edg, int vert, Map<String, String> setE, Set<String> setV, Map<Map<String, String>, Double> w_d, Map<String, Integer> labelA, int tot)  //constructor
 	{ 
 		edges = edg;
 		vertices = vert;
@@ -45,7 +46,7 @@ public class LocalSearch
 	    			System.out.print(it.next());
 	    		System.out.println(" done");
 	    				
-			while (!isSolution(arrLoc) && (stopping_criteria < 100)) //the assignement is not a solution
+			while (!isSolution(arrLoc) && (stopping_criteria < 1000)) //the assignement is not a solution
 			{
 	 			int newVar = new Random().nextInt(vertices);  //select a variable newVar
 				String newVal = randomSelect();  //select a value newVal from the domain
@@ -72,17 +73,19 @@ public class LocalSearch
 	{
 		List<String> arrLoc = new ArrayList<String>();
 		List <String> temp = createString();
-		int total = totalN;
+		int total = temp.size();
 		
 	       for(int i = 0; i < totalN; i++)
 	    	{
-	    		int item = new Random().nextInt((int) total); //pick value from the domain
+	    		int item = new Random().nextInt(total); //pick value from the domain
+	    		System.out.print(item + " " + temp);
 	    		int j = 0;
 	    		String str = " ";
 	    		for(String strT : temp)
 	    		{
 	    		    if (j == item)
 	    		    {
+	    			    System.out.print(strT);
 	    			    str = strT;
 	    			    break;
 	    		    }
@@ -179,19 +182,19 @@ public class LocalSearch
 			 if (count > e.getValue())
 				 return false;
 		}
-		 
-		/*
-		 * 3. Within a distance D win = 1 of a n-gram there are at most D win neighboring n-grams.
-		 */
-		
-		//TODO
-		
 		
 		/*
 		 * 4. For every two neighboring n-grams n i , n j of the text S, there is a directed edge e i =
 		 *	{v x , v y }, where 1 ≤ i, j, x, y ≤ l. The amount of times an n-gram n i is the neighbor of
 		 *	the n-gram n j is the weight w i of the edge e i 
 		 */
+		Map<Map<String, String>, Double> checkWeight = new HashMap<Map<String, String>, Double>();
+		for (Entry<Map<String, String>, Double> e : weighted_degree.entrySet()) 
+		 {
+			Map <String, String> edg = new HashMap<String, String>();
+			edg = e.getKey();
+			checkWeight.put(edg, e.getValue());
+		 }
 		count = 0;
 		for (String str: arr)
 		{
@@ -207,12 +210,28 @@ public class LocalSearch
 					{
 						if (strTemp != e.getValue() ) 
 							return false;
+						for (Entry<Map<String, String>, Double> e1 : checkWeight.entrySet()) 
+						{
+							Map <String, String> edg = new HashMap<String, String>();
+							edg = e1.getKey();
+							if (edg.containsKey(e.getKey()))
+							{
+								checkWeight.put(edg, e1.getValue() - 1);
+								System.out.println(edg + " + " + e1.getValue());
+								break;
+							}
+						}
 						break;
 					}
 				}
 			      count++;
 		      }
 		      strTemp = str;
+		}
+		for (Entry<Map<String, String>, Double> e1 : checkWeight.entrySet()) 
+		{
+			if (e1.getValue() != 0)
+				return false;
 		}
 		
 		return true;

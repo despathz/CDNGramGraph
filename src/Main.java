@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.Map.Entry;
 
 import gr.demokritos.iit.jinsect.utils;
 import gr.demokritos.iit.jinsect.documentModel.representations.DocumentNGramGraph;
@@ -11,7 +12,7 @@ public class Main
 	{
 		// The string we want to represent
 		//String sTmp = args[0];
-		String sTmp = "abcabc";
+		String sTmp = "kitty";
 		System.out.println("Given string: " + sTmp);
 		int totaln = sTmp.length();
 
@@ -26,8 +27,9 @@ public class Main
 
 		java.util.Iterator iIter = dngGraph.getGraphLevel(0).getEdgeSet().iterator();
 		Map<String, String> setEdges = new HashMap<String, String>();
-		Map<String, Double> weighted_degree = new HashMap<String, Double>();
+		Map<Map<String, String>, Double> weighted_degree = new HashMap<Map<String, String>, Double>();
 		Map<String, Integer> labelAppearance = new HashMap<String, Integer>();
+		Map <String, String> edg = new HashMap<String, String>();
 		while (iIter.hasNext())
 		{
 			WeightedEdge weCurItem = (WeightedEdge)iIter.next();
@@ -35,7 +37,9 @@ public class Main
 			String sTail = weCurItem.getVertexB().getLabel();
 			Double degree = weCurItem.getWeight();
 			setEdges.put(sHead, sTail);
-			weighted_degree.put(sHead, degree);
+			Map <String, String> edg1 = new HashMap<String, String>();
+			edg1.put(sHead, sTail);
+			weighted_degree.put(edg1, degree);
 			if (labelAppearance.containsKey(sHead))
 				labelAppearance.put(sHead, labelAppearance.get(sHead)+1);
 			else
@@ -48,8 +52,11 @@ public class Main
 		}
 		 for (Map.Entry<String, String> e : setEdges.entrySet()) 
 			System.out.print(e.getKey() + e.getValue() +  ", ");
-		 for (Map.Entry<String, Double> e : weighted_degree.entrySet()) 
-				System.out.print(e.getKey() + e.getValue() +  " - ");
+		 for (Entry<Map<String, String>, Double> e : weighted_degree.entrySet()) 
+		 {
+			edg = e.getKey();
+			System.out.println(edg + "" + e.getValue());
+		 }
 		 for (Map.Entry<String, Integer> e : labelAppearance.entrySet()) 
 				System.out.print(e.getKey() + e.getValue() +  " ! ");
 		Set <String> setVertices = dngGraph.getGraphLevel(0).UniqueVertices.keySet(); //set of vertices
