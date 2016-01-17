@@ -11,7 +11,7 @@ public class Main
 	{
 		// The string we want to represent
 		//String sTmp = args[0];
-		String sTmp = "mioum";
+		String sTmp = "abcabc";
 		System.out.println("Given string: " + sTmp);
 		int totaln = sTmp.length();
 
@@ -37,15 +37,11 @@ public class Main
 			setEdges.put(sHead, sTail);
 			weighted_degree.put(sHead, degree);
 			if (labelAppearance.containsKey(sHead))
-			{
 				labelAppearance.put(sHead, labelAppearance.get(sHead)+1);
-			}
 			else
 				labelAppearance.put(sHead, 1);
 			if (labelAppearance.containsKey(sTail))
-			{
 				labelAppearance.put(sTail, labelAppearance.get(sTail)+1);
-			}
 			else
 				labelAppearance.put(sTail, 1);
 			
@@ -55,7 +51,7 @@ public class Main
 		 for (Map.Entry<String, Double> e : weighted_degree.entrySet()) 
 				System.out.print(e.getKey() + e.getValue() +  " - ");
 		 for (Map.Entry<String, Integer> e : labelAppearance.entrySet()) 
-				System.out.print(e.getKey() + e.getValue() +  " - ");
+				System.out.print(e.getKey() + e.getValue() +  " ! ");
 		Set <String> setVertices = dngGraph.getGraphLevel(0).UniqueVertices.keySet(); //set of vertices
 		
 		LocalSearch newsearch = new LocalSearch(total_edges, total_vertices, setEdges, setVertices, weighted_degree, labelAppearance, totaln); 
