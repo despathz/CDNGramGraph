@@ -9,7 +9,9 @@ public class Main
 	public static void main(String[] args) throws Exception 
 	{
 		// The string we want to represent
+		Scanner sc = new Scanner(System.in);
 		String sTmp = args[0];
+		String stop = "";
 		System.out.println("Given string: " + sTmp);
 		int totaln = sTmp.length();
 
@@ -56,23 +58,46 @@ public class Main
 			
 		}
 		Set <String> setVertices = dngGraph.getGraphLevel(0).UniqueVertices.keySet(); //set of vertices
-		
-		//new LocalSearch instance, which will be used to solve the decompression problem
-		LocalSearch newsearch = new LocalSearch(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, totaln); 
-		List <String> result = new ArrayList<String>();
-		
-		//Solve and time the CSP
-		long startTime = System.nanoTime();
-		result = newsearch.lsAlgorithm();
-		long endTime = System.nanoTime();
-		long duration = endTime - startTime;
-		
-		//Print the solution and the total execution time
-		System.out.print("Solution: ");
-		for (String str: result)
-			System.out.print(str);
-		System.out.println("\nTotal execution time: " + duration + " ns");
-
+		List <String> solutions = new ArrayList<String>();
+		long endSolutionTime, solutionTime = 0; //timer for finding a new solution
+		long startSolutionTime = System.nanoTime();
+		while (!stop.equals("quit"))
+		{
+			//new LocalSearch instance, which will be used to solve the decompression problem
+			LocalSearch newsearch = new LocalSearch(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, totaln); 
+			List <String> result = new ArrayList<String>();
+			
+			//Solve and time the CSP
+			long startTime = System.nanoTime();
+			result = newsearch.lsAlgorithm();
+			long endTime = System.nanoTime();
+			long duration = endTime - startTime;
+			
+			if (!solutions.contains(result.toString()))
+				solutions.add(result.toString());
+			else 
+			{
+				endSolutionTime = System.nanoTime();
+				solutionTime = endSolutionTime - startSolutionTime;
+				if (solutionTime < 5000000000L) //5 seconds
+					continue;
+				else
+				{
+					System.out.println("Could not find a new solution.");
+					break;
+				}
+			}
+			
+			//Print the solution and the total execution time
+			System.out.print("Solution: ");
+			for (String str: result)
+				System.out.print(str);
+			System.out.println("\nTotal execution time: " + duration + " ns");
+			System.out.println("Please press \"enter\" for the next solution, otherwise type \"quit\".");
+			stop = sc.nextLine();
+			startSolutionTime = System.nanoTime();
+		}
+		sc.close();
 		/* The following command gets the first n-gram graph level (with the minimum n-gram
 		size) and renders it, using the utils package, as a DOT string */
 		System.out.println(utils.graphToDot(dngGraph.getGraphLevel(0), true));	
