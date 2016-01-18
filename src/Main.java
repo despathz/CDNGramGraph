@@ -1,9 +1,7 @@
 import java.util.*;
-import java.util.Map.Entry;
 
 import gr.demokritos.iit.jinsect.utils;
 import gr.demokritos.iit.jinsect.documentModel.representations.DocumentNGramGraph;
-import gr.demokritos.iit.jinsect.structs.UniqueVertexGraph;
 import salvo.jesus.graph.*;
 
 public class Main 
@@ -11,8 +9,7 @@ public class Main
 	public static void main(String[] args) throws Exception 
 	{
 		// The string we want to represent
-		//String sTmp = args[0];
-		String sTmp = "kitty";
+		String sTmp = args[0];
 		System.out.println("Given string: " + sTmp);
 		int totaln = sTmp.length();
 
@@ -22,59 +19,59 @@ public class Main
 		// Create the graph
 		dngGraph.setDataString(sTmp);
 
+		//Getting total vertices and edges from the dngGraph
 		int total_vertices = dngGraph.getGraphLevel(0).getVerticesCount(); //total vertices
 		int total_edges = dngGraph.getGraphLevel(0).getEdgesCount(); //total edges
 
-		java.util.Iterator iIter = dngGraph.getGraphLevel(0).getEdgeSet().iterator();
+		/*
+		 * weighted_setEdges: A Hashmap that is used to keep the labels of the ends of each edge of the graph:
+		 * 				 <<Right End of the Edge, Left End of the Edge>, Weight of the Edge>
+		 * weighted_degree: A Hashmap that contains the weighted degree of each vertex of the graph:
+		 * 				 HashMap<Vertex, Weighted Degree>
+		 * setVertices: A Set that contains all the vertices of the graph:
+		 * 			Set <Vertex> 
+		 */
+		Iterator iIter = dngGraph.getGraphLevel(0).getEdgeSet().iterator();
 		Map<String, String> setEdges = new HashMap<String, String>();
-		Map<Map<String, String>, Double> weighted_degree = new HashMap<Map<String, String>, Double>();
-		Map<String, Integer> labelAppearance = new HashMap<String, Integer>();
-		Map <String, String> edg = new HashMap<String, String>();
+		Map<Map<String, String>, Double> weighted_setEdges = new HashMap<Map<String, String>, Double>();
+		Map<String, Integer> weighted_degree = new HashMap<String, Integer>();
 		while (iIter.hasNext())
 		{
-			WeightedEdge weCurItem = (WeightedEdge)iIter.next();
-			String sHead = weCurItem.getVertexA().getLabel();
-			String sTail = weCurItem.getVertexB().getLabel();
-			Double degree = weCurItem.getWeight();
+			WeightedEdge weCurItem = (WeightedEdge)iIter.next(); //get weighted edge
+			String sHead = weCurItem.getVertexA().getLabel(); //get the right vertex of the edge
+			String sTail = weCurItem.getVertexB().getLabel(); //get the left vertex of the edge
+			Double degree = weCurItem.getWeight(); //get the weight of the edge
 			setEdges.put(sHead, sTail);
-			Map <String, String> edg1 = new HashMap<String, String>();
-			edg1.put(sHead, sTail);
-			weighted_degree.put(edg1, degree);
-			if (labelAppearance.containsKey(sHead))
-				labelAppearance.put(sHead, labelAppearance.get(sHead)+1);
+			Map <String, String> edg1 = new HashMap<String, String>(); //create a new edge for the weighted_setEdges 
+			edg1.put(sHead, sTail); 
+			weighted_setEdges.put(edg1, degree); //put the new edge in the weighted_setEdges hashmap
+			if (weighted_degree.containsKey(sHead)) //update the weighted degree of the right vertex of the edge
+				weighted_degree.put(sHead, weighted_degree.get(sHead)+1);
 			else
-				labelAppearance.put(sHead, 1);
-			if (labelAppearance.containsKey(sTail))
-				labelAppearance.put(sTail, labelAppearance.get(sTail)+1);
+				weighted_degree.put(sHead, 1);
+			if (weighted_degree.containsKey(sTail)) //update the weighted degree of the left vertex of the edge
+				weighted_degree.put(sTail, weighted_degree.get(sTail)+1);
 			else
-				labelAppearance.put(sTail, 1);
+				weighted_degree.put(sTail, 1);
 			
 		}
-		 for (Map.Entry<String, String> e : setEdges.entrySet()) 
-			System.out.print(e.getKey() + e.getValue() +  ", ");
-		 for (Entry<Map<String, String>, Double> e : weighted_degree.entrySet()) 
-		 {
-			edg = e.getKey();
-			System.out.println(edg + "" + e.getValue());
-		 }
-		 for (Map.Entry<String, Integer> e : labelAppearance.entrySet()) 
-				System.out.print(e.getKey() + e.getValue() +  " ! ");
 		Set <String> setVertices = dngGraph.getGraphLevel(0).UniqueVertices.keySet(); //set of vertices
 		
-		LocalSearch newsearch = new LocalSearch(total_edges, total_vertices, setEdges, setVertices, weighted_degree, labelAppearance, totaln); 
-		//String[] result =  new String[total_vertices];
+		//new LocalSearch instance, which will be used to solve the decompression problem
+		LocalSearch newsearch = new LocalSearch(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, totaln); 
 		List <String> result = new ArrayList<String>();
 		
-		//long startTime = System.nanoTime();
+		//Solve and time the CSP
+		long startTime = System.nanoTime();
 		result = newsearch.lsAlgorithm();
-		//long endTime = System.nanoTime();
-		//long duration = endTime - startTime;
+		long endTime = System.nanoTime();
+		long duration = endTime - startTime;
 		
+		//Print the solution and the total execution time
 		System.out.print("Solution: ");
 		for (String str: result)
 			System.out.print(str);
-		System.out.println();
-		//System.out.println("Total execution time: " + duration);
+		System.out.println("\nTotal execution time: " + duration + " ns");
 
 		/* The following command gets the first n-gram graph level (with the minimum n-gram
 		size) and renders it, using the utils package, as a DOT string */
