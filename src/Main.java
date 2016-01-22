@@ -10,7 +10,7 @@ public class Main
 	{
 		// The string we want to represent
 		Scanner sc = new Scanner(System.in);
-		String sTmp = args[0];
+		String sTmp = args[1];
 		String stop = "";
 		System.out.println("Given string: " + sTmp);
 		int totaln = sTmp.length();
@@ -59,17 +59,31 @@ public class Main
 		}
 		Set <String> setVertices = dngGraph.getGraphLevel(0).UniqueVertices.keySet(); //set of vertices
 		List <String> solutions = new ArrayList<String>();
-		long endSolutionTime, solutionTime = 0; //timer for finding a new solution
+		List <String> result = new ArrayList<String>();
+		long endSolutionTime, startTime = 0, solutionTime = 0; //timer for finding a new solution
 		long startSolutionTime = System.nanoTime();
 		while (!stop.equals("quit"))
 		{
-			//new LocalSearch instance, which will be used to solve the decompression problem
-			LocalSearch newsearch = new LocalSearch(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, totaln); 
-			List <String> result = new ArrayList<String>();
-			
-			//Solve and time the CSP
-			long startTime = System.nanoTime();
-			result = newsearch.lsAlgorithm();
+			switch (args[0]) 
+			{
+		            	case "ls":
+					//new LocalSearch instance, which will be used to solve the decompression problem
+					LocalSearch newsearchLs = new LocalSearch(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, totaln); 
+					
+					//Solve and time the CSP
+					startTime = System.nanoTime();
+					result = newsearchLs.lsAlgorithm();
+					break;
+				
+		            	case "dfs":
+		            		//new LocalSearch instance, which will be used to solve the decompression problem
+					DepthFirstSearch newsearchDfs = new DepthFirstSearch(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, totaln); 
+					
+					//Solve and time the CSP
+					startTime = System.nanoTime();
+					result = newsearchDfs.lsAlgorithm();
+		            		break;
+			}
 			long endTime = System.nanoTime();
 			long duration = endTime - startTime;
 			
