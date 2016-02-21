@@ -5,7 +5,8 @@ import gr.demokritos.iit.jinsect.documentModel.representations.DocumentNGramGrap
 import salvo.jesus.graph.*;
 
 public class Main 
-{
+{	
+	
 	public static void main(String[] args) throws Exception 
 	{
 		// The string we want to represent
@@ -76,13 +77,16 @@ public class Main
 					break;
 				
 		            	case "dfs":
-		            		//new LocalSearch instance, which will be used to solve the decompression problem
-					DepthFirstSearch newsearchDfs = new DepthFirstSearch(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, totaln); 
-					
-					//Solve and time the CSP
-					startTime = System.nanoTime();
-					result = newsearchDfs.lsAlgorithm();
-		            		break;
+//		            		//new LocalSearch instance, which will be used to solve the decompression problem
+//					//DepthFirstSearch newsearchDfs = new DepthFirstSearch(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, totaln); 
+//		            		TreeNode<String> root = new TreeNode<String>("root", totaln);
+//		            		System.out.println(root.data);
+//		            		//dfs java
+//		            		
+//					//Solve and time the CSP
+//					startTime = System.nanoTime();
+//					//result = newsearchDfs.lsAlgorithm();
+//		            		break;
 			}
 			long endTime = System.nanoTime();
 			long duration = endTime - startTime;
@@ -107,6 +111,34 @@ public class Main
 			for (String str: result)
 				System.out.print(str);
 			System.out.println("\nTotal execution time: " + duration + " ns");
+			
+			/*
+			 * Evaluating the algorithm that was used
+			 */
+			System.out.print("Press y if you want to evaluate the algorithm or n if you do not: ");
+			String yes = "y", desicion = sc.nextLine();
+			if (desicion.compareTo(yes) == 0)
+			{
+				/*Evaluate the algorithm*/
+				switch (args[0]) 
+				{
+			            	case "ls":
+						//new LocalSearch instance, which will be used to solve the decompression problem
+						EvaluatedLocalSearch newsearchLs = new EvaluatedLocalSearch(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, totaln); 
+						
+						//Solve and time the CSP
+						result = newsearchLs.lsAlgorithm();
+						int methodCost = newsearchLs.getMethodCost();
+						System.out.println("MethodCost is: " + methodCost);
+						break;
+					
+			            	case "dfs":
+//			            		
+				}
+			}
+			else
+				System.out.println("Terminating...");			
+			
 			System.out.println("Please press \"enter\" for the next solution, otherwise type \"quit\".");
 			stop = sc.nextLine();
 			startSolutionTime = System.nanoTime();
@@ -115,7 +147,6 @@ public class Main
 		/* The following command gets the first n-gram graph level (with the minimum n-gram
 		size) and renders it, using the utils package, as a DOT string */
 		System.out.println(utils.graphToDot(dngGraph.getGraphLevel(0), true));	
-        
 	}
 }
 
