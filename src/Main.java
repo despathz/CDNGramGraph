@@ -77,16 +77,14 @@ public class Main
 					break;
 				
 		            	case "dfs":
-//		            		//new LocalSearch instance, which will be used to solve the decompression problem
-//					//DepthFirstSearch newsearchDfs = new DepthFirstSearch(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, totaln); 
-//		            		TreeNode<String> root = new TreeNode<String>("root", totaln);
-//		            		System.out.println(root.data);
-//		            		//dfs java
-//		            		
-//					//Solve and time the CSP
-//					startTime = System.nanoTime();
-//					//result = newsearchDfs.lsAlgorithm();
-//		            		break;
+		            		TreeNode<String> root = new TreeNode<String>("root");
+		            		root = root.TreeCreate(3, root);
+		            		//System.out.println(root.);
+		            		
+					//Solve and time the CSP
+					startTime = System.nanoTime();
+					//result = newsearchDfs.lsAlgorithm();
+		            		break;
 			}
 			long endTime = System.nanoTime();
 			long duration = endTime - startTime;
