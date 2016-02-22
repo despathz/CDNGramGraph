@@ -1,3 +1,4 @@
+
 import java.util.*;
 
 import gr.demokritos.iit.jinsect.utils;
@@ -78,7 +79,7 @@ public class Main
 				
 		            	case "dfs":
 		            		TreeNode<String> root = new TreeNode<String>("root");
-		            		root = root.TreeCreate(3, root);
+		            		root = root.TreeCreate(2, root);
 		            		//System.out.println(root.);
 		            		
 					//Solve and time the CSP

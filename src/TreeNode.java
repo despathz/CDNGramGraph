@@ -1,3 +1,4 @@
+
 import java.util.*;
 
 public class TreeNode<T> implements Iterable<TreeNode<T>>
@@ -8,17 +9,25 @@ public class TreeNode<T> implements Iterable<TreeNode<T>>
 	Integer stringLength, level;
 	String nodeName = "";
 	
-	public TreeNode(T str) //for root
+	/*
+	 * @param nodeValue: the value the new node will have
+	 */
+	public TreeNode(T nodeValue) //for root
 	{
-		this.data = str;
+		this.data = nodeValue;
 		this.nodeName = "0";
 		this.children = new LinkedList<TreeNode<T>>();
 		level = 0; 
 	}
 	
-	public TreeNode(T str, TreeNode<T> parent)
+	/*
+	 * @param nodeValue: the value the new node will have
+	 * 
+	 * @param parent: the parent node of the new node
+	 */
+	public TreeNode(T nodeValue, TreeNode<T> parent)
 	{
-		this.data = str;
+		this.data = nodeValue;
 		this.parent = parent;
 		int numParentChildren = parent.getNumChildren();
 		this.nodeName = parent.getName() + "_" + numParentChildren;
@@ -28,13 +37,14 @@ public class TreeNode<T> implements Iterable<TreeNode<T>>
 	
 	/*
 	 * @param height: the length of the input string
+	 * 
+	 * @param root: the root node of the tree
 	 */
 	public TreeNode<String> TreeCreate(Integer height, TreeNode<String> root)
 	{
 		String CHARS =
 			"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzαβγδεζηθικλμνξπστυφχψωΓΔΘΛΞΠΣΦΨΩ!@#$%&";
-
-		//TreeNode<String> root = new TreeNode<String>("root");
+		
 		TreeNode<String> current;
 		Integer totalChildren = 0;
 		Queue<TreeNode<String>> queue = new LinkedList<TreeNode<String>>(); //Queue holding the nodes for which children will be created
@@ -43,7 +53,7 @@ public class TreeNode<T> implements Iterable<TreeNode<T>>
 		while (level < height)
 		{
 			current = queue.remove();
-			for (int j = 0; j < CHARS.length(); j++)
+			for (int j = 0; j < CHARS.length(); j++) //create a new child that has a character of CHARS as its value
 			{
 				String mychar = Character.toString(CHARS.charAt(j));
 				TreeNode<String> child = new TreeNode<String>(mychar, current);
@@ -51,12 +61,7 @@ public class TreeNode<T> implements Iterable<TreeNode<T>>
 				totalChildren++;
 				queue.add(child);
 			}
-			if (current.data == "root")
-			{
-				level++;
-				totalChildren = 0;
-			}
-			else if (totalChildren == Math.pow(CHARS.length(), (level + 1)))
+			if ((current.data == "root") || (totalChildren == Math.pow(CHARS.length(), (level + 1)))) //the level will be increased if the number of its child equals to CHARS.length() ^ (level +1)
 			{
 				level++;
 				totalChildren = 0;
