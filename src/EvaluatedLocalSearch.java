@@ -82,7 +82,7 @@ public class EvaluatedLocalSearch implements LocalSearchI
 	{
 		List<String> arrLoc = new ArrayList<String>();
 		List <String> temp = createString();
-		int total = temp.size();
+		int total = temp.size(); System.out.println(total);
 		
 	       for(int i = 0; i < totalN; i++)
 	    	{

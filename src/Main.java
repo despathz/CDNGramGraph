@@ -80,7 +80,6 @@ public class Main
 		            	case "dfs":
 		            		TreeNode<String> root = new TreeNode<String>("root");
 		            		root = root.TreeCreate(2, root);
-		            		//System.out.println(root.);
 		            		
 					//Solve and time the CSP
 					startTime = System.nanoTime();
