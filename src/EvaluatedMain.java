@@ -1,8 +1,5 @@
 import java.util.*;
 import java.io.FileWriter;
-import java.io.IOException;
-
-import gr.demokritos.iit.jinsect.utils;
 import gr.demokritos.iit.jinsect.documentModel.representations.DocumentNGramGraph;
 import salvo.jesus.graph.*;
 
@@ -13,7 +10,12 @@ public class EvaluatedMain
 
 	public static void main(String[] args) throws Exception 
 	{
-		// The string we want to represent
+		/*
+		 * Getting the parameters from the user:
+		 * First parameter:		lengthOfString	-> 		the length of the strings
+		 * Second parameter: 	totalStrings 		-> 		the number of the produced strings
+		 * Third parameter:	dProbabilityOfRepetition ->  probability of repetition for the current set of string
+		 */
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Please give the length of the strings: ");
 		Integer lengthOfString = Integer.parseInt(sc.nextLine());
@@ -21,9 +23,14 @@ public class EvaluatedMain
 		Integer totalStrings = Integer.parseInt(sc.nextLine());
 		System.out.println("Please give probability of repetition for the current set of string: ");
 		Integer dProbabilityOfRepetition = Integer.parseInt(sc.nextLine());
+		
+		/* 
+		 * Creating the csv file 
+		 * String | Probability Of Repetition | Execution Time (ns) | Solutions Found | Method Cost 
+		 */
 		Integer totalSolutions = 0;
 		String file  = "";
-		file += "file_" + lengthOfString + "_" + dProbabilityOfRepetition + "_" + totalStrings + ".csv"; System.out.println(file);
+		file += "file_" + lengthOfString + "_" + dProbabilityOfRepetition + "_" + totalStrings + ".csv"; System.out.println(file); //the name of the file 
 		FileWriter writer = new FileWriter(file);
 		writer.append("String");  
 		writer.append(','); writer.append("Probability Of Repetition");
@@ -31,39 +38,36 @@ public class EvaluatedMain
 		writer.append(','); writer.append("Solutions Found");
 		writer.append(','); writer.append("Method Cost");
 		writer.append('\n');
+		
 		for (int noString = 0; noString < totalStrings; noString++)
 		{
 			totalSolutions = 0;
-			String myString = "";
+			String myString = ""; //the new string that will be generated
 			String mainChar = getRandomStringCharacters(); //select a main character from the available characters
-			for (int iCur = 0; iCur < lengthOfString; iCur++) 
+			for (int iCur = 0; iCur < lengthOfString; iCur++) //generating the new string 
 			{
-				int percent = (100 / lengthOfString) * iCur;
-				if (percent <= dProbabilityOfRepetition)
+				int percent = (100 / lengthOfString) * iCur; 
+				if (percent <= dProbabilityOfRepetition) //if the probability is not correct add the main character to the string
 					myString+=mainChar;
-				else
+				else //the probability is achieved, select randomly the rest of the characters
 				{
 					String newStr = "";
 					while (true)
 					{
-						newStr = getRandomStringCharacters();
-						if (!myString.contains(newStr))
+						newStr = getRandomStringCharacters(); 
+						if (!myString.contains(newStr)) //do not add the main character again
 							break;
 					}
 					myString += newStr;
 				}
 			}
 			
-			String sTmp = myString;
 			String stop = "";
-			//System.out.println("Given string: " + sTmp);
-			int totaln = sTmp.length();
-		
 			 // Min n-gram size and max n-gram size set to 1, and the dist parameter set to 1.
 			DocumentNGramGraph dngGraph = new DocumentNGramGraph(1, 1, 1); 
 		
 			// Create the graph
-			dngGraph.setDataString(sTmp);
+			dngGraph.setDataString(myString);
 		
 			//Getting total vertices and edges from the dngGraph
 			int total_vertices = dngGraph.getGraphLevel(0).getVerticesCount(); //total vertices
@@ -107,13 +111,13 @@ public class EvaluatedMain
 			Integer methodCost = 0;
 			long endSolutionTime, startTime = 0, solutionTime = 0; //timer for finding a new solution
 			long startSolutionTime = System.nanoTime();
-			while (!stop.equals("quit"))
+			while (true) 
 			{
 				switch (args[0]) 
 				{
 			            	case "ls":
 			            		//new LocalSearch instance, which will be used to solve the decompression problem
-						EvaluatedLocalSearch newsearchLs = new EvaluatedLocalSearch(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, totaln); 
+						EvaluatedLocalSearch newsearchLs = new EvaluatedLocalSearch(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, lengthOfString); 
 						
 						//Solve and time the CSP
 						startTime = System.nanoTime();
@@ -129,8 +133,7 @@ public class EvaluatedMain
 				{
 					totalSolutions++;
 					solutions.add(result.toString());
-					//System.out.println("MethodCost is: " + methodCost);
-					writer.append(myString);  
+					writer.append(myString);  //add the new string and its properities to the csv file
 					writer.append(','); writer.append(dProbabilityOfRepetition.toString());
 					writer.append(','); writer.append(Long.toString(duration));
 					writer.append(','); writer.append(totalSolutions.toString());
@@ -141,26 +144,13 @@ public class EvaluatedMain
 				{
 					endSolutionTime = System.nanoTime();
 					solutionTime = endSolutionTime - startSolutionTime;
-					if (solutionTime < 1000000000L) //3 seconds
+					if (solutionTime < 1000000000L) //1 second
 						continue;
-					else
-					{
-						//System.out.println("Could not find a new solution.");
+					else //Could not find a new solution
 						break;
-					}
 				}
-				
-				//Print the solution and the total execution time
-//				System.out.print("Solution: ");
-//				for (String str: result)
-//					System.out.print(str);
-//				System.out.println("\nTotal execution time: " + duration + " ns");	
-				
 				startSolutionTime = System.nanoTime();
-			}
-			/* The following command gets the first n-gram graph level (with the minimum n-gram
-			size) and renders it, using the utils package, as a DOT string */
-			//System.out.println(utils.graphToDot(dngGraph.getGraphLevel(0), true));	
+			}	
 			writer.flush();
 		}
 		sc.close();
