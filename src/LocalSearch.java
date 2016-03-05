@@ -49,7 +49,7 @@ public class LocalSearch
 		{
 			stopping_criteria = 0;
 			arrLoc = randomInitialize(); 
-	    				
+			
 			while (!isSolution(arrLoc) && (stopping_criteria < 1000)) //the assignement is not a solution
 			{
 	 			int newVar = new Random().nextInt(vertices);  //select a variable newVar
@@ -61,7 +61,12 @@ public class LocalSearch
 					break;
 				}
 				stopping_criteria++;
-			}	
+			}
+			if (isSolution(arrLoc))
+			{
+				found = 1;
+				break;
+			}
 			if (found == 1)
 				break;
 		}
@@ -77,7 +82,7 @@ public class LocalSearch
 	{
 		List<String> arrLoc = new ArrayList<String>();
 		List <String> temp = createString();
-		int total = temp.size();
+		int total = temp.size(); System.out.println("! " + total);
 		
 	       for(int i = 0; i < totalN; i++)
 	    	{
@@ -89,14 +94,18 @@ public class LocalSearch
 	    		    if (j == item)
 	    		    {
 	    			    str = strT;
+	    			    temp.remove(j);
 	    			    break;
 	    		    }
 	    		    j = j + 1;
 	    		}
-	    		temp.remove(str);
+	    		//temp.remove(str);
+	    		//temp=temp.replaceFirst(String.valueOf(temp.charAt(j)),"");
 	    		arrLoc.add(str);
 	    		total--;
+	    		System.out.println("...");
 	    	}
+	       System.out.println("tt");
 	       return arrLoc;
 	}
 	
@@ -109,14 +118,15 @@ public class LocalSearch
 		List <String> temp = new ArrayList<String>();
 		for (Map.Entry<String, Integer> e : weighted_degree.entrySet()) 
     		{
-    			Integer i = e.getValue();
+			System.out.println("e " + e.getValue() + e.getKey());
+    			int i = e.getValue();
     			getAllAppearances+= i;
     			for (int j = 0; j < i; j++)
     				temp.add(e.getKey());
     		}
-//		for (String s : temp) //debugging
-//			System.out.println(" ~ " + s);
-//		System.out.println(getAllAppearances);
+		for (String s : temp) //debugging
+			System.out.println(" ~ " + s);
+		System.out.println(getAllAppearances);
 		return temp;
 	}
 
@@ -174,6 +184,7 @@ public class LocalSearch
 			if (!arr.contains(it.next()))
 				return false;
 		}
+		//System.out.println("passed 1");
 		
 		/*
 		 * 2. Every label l ∈ L(V ) should appear at most a number of times equal to the weighted
@@ -191,6 +202,7 @@ public class LocalSearch
 			 if (count > e.getValue())
 				 return false;
 		}
+		//System.out.println("passed 2");
 		
 		/*
 		 * 4. For every two neighboring n-grams n i , n j of the text S, there is a directed edge e i =
@@ -245,7 +257,7 @@ public class LocalSearch
 			if (e1.getValue() != 0)
 				return false;
 		}
-		
+		//System.out.println("passed 4");
 		return true;
 	}
 	

@@ -54,7 +54,7 @@ public class Main
 			else
 				weighted_degree.put(sHead, 1);
 			if (weighted_degree.containsKey(sTail)) //update the weighted degree of the left vertex of the edge
-				weighted_degree.put(sTail, weighted_degree.get(sTail)+1);
+				weighted_degree.put(sTail, weighted_degree.get(sTail)+degree.intValue());
 			else
 				weighted_degree.put(sTail, 1);
 			
@@ -78,8 +78,9 @@ public class Main
 					break;
 				
 		            	case "dfs":
-		            		TreeNode<String> root = new TreeNode<String>("root");
-		            		root = root.TreeCreate(2, root);
+		            		TreeNode<String> root = new TreeNode<String>("root"); //create the root of the dfs tree
+		            		root = root.TreeCreate(2, root); //create the whole dfs tree
+		            		//result = root.dfsExecute(sTmp);
 		            		
 					//Solve and time the CSP
 					startTime = System.nanoTime();

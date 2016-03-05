@@ -67,6 +67,11 @@ public class EvaluatedLocalSearch implements LocalSearchI
 				}
 				stopping_criteria++;
 			}	
+			if (isSolution(arrLoc))
+			{
+				found = 1;
+				break;
+			}
 			if (found == 1)
 				break;
 		}
@@ -82,7 +87,7 @@ public class EvaluatedLocalSearch implements LocalSearchI
 	{
 		List<String> arrLoc = new ArrayList<String>();
 		List <String> temp = createString();
-		int total = temp.size(); System.out.println(total);
+		int total = temp.size(); 
 		
 	       for(int i = 0; i < totalN; i++)
 	    	{
@@ -94,11 +99,12 @@ public class EvaluatedLocalSearch implements LocalSearchI
 	    		    if (j == item)
 	    		    {
 	    			    str = strT;
+	    			    temp.remove(j);
 	    			    break;
 	    		    }
 	    		    j = j + 1;
 	    		}
-	    		temp.remove(str);
+	    		//temp.remove(str);
 	    		arrLoc.add(str);
 	    		total--;
 	    	}
