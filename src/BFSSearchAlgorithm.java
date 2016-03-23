@@ -39,15 +39,19 @@ public class BFSSearchAlgorithm implements ISearchAlgorithm<String>
 	       	 }
 	            
 	       	 // Get next node and make it current, IF IT EXISTS
+	       	 methodCost++; //lNextCandidates.get cost
 	       	 ptnCurrent = lNextCandidates.get(0);
 	       	 // Remove it from candidates
+	       	 methodCost++; //lNextCandidates.remove cost
 	       	 lNextCandidates.remove(0);
 	            
 	       	 // If the node is valid
 	       	 methodCost++; //isValid() method cost
 	       	 if (pToSolve.isValid(ptnCurrent))
-	       		 // Add its children to the possible next steps
-	       		 lNextCandidates.addAll(pToSolve.getNextStatesFor(ptnCurrent));
+	       	 { // Add its children to the possible next steps
+	       	 	methodCost++; //lNextCandidates.addAll cost
+	       		lNextCandidates.addAll(pToSolve.getNextStatesFor(ptnCurrent));
+	       	 }
 	       	 System.out.println(lNextCandidates.size());
 	        }
 	        
