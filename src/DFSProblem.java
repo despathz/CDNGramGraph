@@ -3,6 +3,8 @@ import java.util.*;
 
 public class DFSProblem implements IProblem<String>
 {
+	private static final String CHARS =
+			"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzαβγδεζηθικλμνξπστυφχψωΓΔΘΛΞΠΣΦΨΩ!@#$%&";
 	protected String curStr;
 	protected Integer curTreeHeight;
 	
@@ -15,12 +17,15 @@ public class DFSProblem implements IProblem<String>
 	@Override
 	public boolean isSolution(IProblemTreeNode<String> p)
 	{
-		return (p.returnNodeProposedSolution() == curStr);
+		System.out.println("solution???" + curStr + " " + p.returnNodeProposedSolution());
+		System.out.println("solution???" + p.returnNodeProposedSolution().equals(curStr));
+		return (p.returnNodeProposedSolution().equals(curStr));
 	}
 
 	@Override
 	public boolean isValid(IProblemTreeNode<String> p)
 	{
+		System.out.println("valid???" + p.returnNodeProposedSolution().length() + " " + curTreeHeight);
 		return !(p.returnNodeProposedSolution().length() > curTreeHeight);
 	}
 
@@ -40,7 +45,7 @@ public class DFSProblem implements IProblem<String>
 	@Override
 	public List<IProblemTreeNode<String>> getNextStatesFor(IProblemTreeNode<String> p)
 	{
-		String[] curStringStates = curStr.split("");
+		String[] curStringStates = CHARS.split("");
 		List<String> lPossibleChars = Arrays.asList(curStringStates);
 		
 		//Init result list

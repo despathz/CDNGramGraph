@@ -4,7 +4,7 @@ public class Main_v1
 
 	public static void main(String[] args) throws Exception 
 	{
-		String curString = "abc";
+		String curString = "000";
 		Integer treeHeight = 3;
 		
 		 // Create the problem
