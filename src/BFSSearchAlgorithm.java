@@ -52,7 +52,6 @@ public class BFSSearchAlgorithm implements ISearchAlgorithm<String>
 	       	 	methodCost++; //lNextCandidates.addAll cost
 	       		lNextCandidates.addAll(pToSolve.getNextStatesFor(ptnCurrent));
 	       	 }
-	       	 System.out.println(lNextCandidates.size());
 	        }
 	        
 	        // If we have a solution
