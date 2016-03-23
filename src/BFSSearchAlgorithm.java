@@ -22,7 +22,7 @@ public class BFSSearchAlgorithm implements ISearchAlgorithm<String>
 	        
 	        // Initialize list of possible nodes
 	        List<IProblemTreeNode<String>> lNextCandidates = new ArrayList<>();
-	        methodCost++; //add cost of the lNextCandidates cost
+	        methodCost++; //add  lNextCandidates.add cost
 	        lNextCandidates.add(ptnCurrent);
 	        
 	        // If we have done less than 10K steps and
