@@ -17,15 +17,12 @@ public class BFSProblem implements IProblem<String>
 	@Override
 	public boolean isSolution(IProblemTreeNode<String> p)
 	{
-		System.out.println("solution???" + curStr + " " + p.returnNodeProposedSolution());
-		System.out.println("solution???" + p.returnNodeProposedSolution().equals(curStr));
 		return (p.returnNodeProposedSolution().equals(curStr));
 	}
 
 	@Override
 	public boolean isValid(IProblemTreeNode<String> p)
 	{
-		System.out.println("valid???" + p.returnNodeProposedSolution().length() + " " + curTreeHeight);
 		return !(p.returnNodeProposedSolution().length() > curTreeHeight);
 	}
 
