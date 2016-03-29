@@ -18,15 +18,12 @@ public class DFSProblem implements IProblem<String>
 	@Override
 	public boolean isSolution(IProblemTreeNode<String> p)
 	{
-		System.out.println("solution???" + curStr + " " + p.returnNodeProposedSolution());
-		System.out.println("solution???" + p.returnNodeProposedSolution().equals(curStr));
 		return (p.returnNodeProposedSolution().equals(curStr));
 	}
 
 	@Override
 	public boolean isValid(IProblemTreeNode<String> p)
 	{
-		System.out.println("valid???" + p.returnNodeProposedSolution().length() + " " + curTreeHeight);
 		return !(p.returnNodeProposedSolution().length() + 1 > curTreeHeight);
 	}
 
@@ -60,10 +57,9 @@ public class DFSProblem implements IProblem<String>
 				continue;
 			System.out.print(sPossibleChar + " ~ ");
 			// Create the corresponding new string
-		       String sTmp = p.returnNodeProposedSolution() + sPossibleChar;
-		       // Add created concatenation to results
-		       lsRes.add(0, new DFSStringProblemTreeNode(sTmp));
-		       System.out.println("\n" + lsRes.get(0).returnNodeProposedSolution());
+		        String sTmp = p.returnNodeProposedSolution() + sPossibleChar;
+		        // Add created concatenation to results
+		        lsRes.add(0, new DFSStringProblemTreeNode(sTmp));
 		}
 		
 		return lsRes;
