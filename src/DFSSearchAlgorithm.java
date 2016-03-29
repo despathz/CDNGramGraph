@@ -30,7 +30,6 @@ public class DFSSearchAlgorithm implements ISearchAlgorithm<String>
 	        while ((iCnt++ < 100000) && (!pToSolve.isSolution(ptnCurrent))) 
 	        {
 	       	 methodCost++; //isSolution() method cost
-	       	 System.out.println("in");
 	       	 // If we checked all cases
 	       	 if (lNextCandidates.size() == 0)
 	       	 {
