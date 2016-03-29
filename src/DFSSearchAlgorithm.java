@@ -27,7 +27,6 @@ public class DFSSearchAlgorithm implements ISearchAlgorithm<String>
 	        
 	        // If we have done less than 10K steps and
 	        // we have not yet found a solution
-	        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	        while ((iCnt++ < 100000) && (!pToSolve.isSolution(ptnCurrent))) 
 	        {
 	       	 methodCost++; //isSolution() method cost
@@ -40,25 +39,19 @@ public class DFSSearchAlgorithm implements ISearchAlgorithm<String>
 	       	 }
 	            
 	       	 // Get next node and make it current, IF IT EXISTS
-	       	 methodCost++; //lNextCandidates.get cost
-	       	 ptnCurrent = lNextCandidates.pop(); System.out.println("??? " + ptnCurrent.returnNodeProposedSolution());
-	       	 // Remove it from candidates
-	       	 //methodCost++; //lNextCandidates.remove cost
-	       	 //lNextCandidates.remove(0);
+	       	 methodCost++; //lNextCandidates.pop cost
+	       	 ptnCurrent = lNextCandidates.pop(); 
 	            
 	       	 // If the node is valid
 	       	 methodCost++; //isValid() method cost
 	       	 if (pToSolve.isValid(ptnCurrent))
 	       	 { // Add its children to the possible next steps
 	       	 	methodCost++; //lNextCandidates.addAll cost
-	       	 	for (IProblemTreeNode<String> piou : pToSolve.getNextStatesFor(ptnCurrent))
+	       	 	for (IProblemTreeNode<String> p : pToSolve.getNextStatesFor(ptnCurrent))
 	       	 	{
-	       	 		System.out.println(" + " + piou.returnNodeProposedSolution());
-	       	 		lNextCandidates.push(piou);
+	       	 		//System.out.println(" + " + p.returnNodeProposedSolution());
+	       	 		lNextCandidates.push(p);
 	       	 	}
-	       	 	//lNextCandidates.addAll(0, pToSolve.getNextStatesFor(ptnCurrent));
-	       	 	
-	       	 	System.out.println("\n pppppp " + lNextCandidates.peek().returnNodeProposedSolution());
 	       	 }
 	        }
 	        
