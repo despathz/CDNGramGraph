@@ -142,32 +142,32 @@ public class Main_v1
 						break;
 			            	case "bfs":
 			            		myString = "ab";
-			       		 // Create the problem
-			       	        myProblem = new BFSProblem(myString, lengthOfString);
-			       	        // Create the Search algorithm
-			       	        s = new BFSSearchAlgorithm();
-			       	        
-			       	        ptnSol = s.getSolutionFor(myProblem);
-			       	        methodCost = s.getMethodCost();
-			       	        sSolution = ptnSol == null ? "[No solution found]"
-			       	                : ptnSol.returnNodeProposedSolution();
-			       	        
-			       	        System.out.println("Solution:" + sSolution);
-			       	        break;
+			       		 	// Create the problem
+				       	        myProblem = new BFSProblem(myString, lengthOfString);
+				       	        // Create the Search algorithm
+				       	        s = new BFSSearchAlgorithm();
+				       	        
+				       	        ptnSol = s.getSolutionFor(myProblem);
+				       	        methodCost = s.getMethodCost();
+				       	        sSolution = ptnSol == null ? "[No solution found]"
+				       	                : ptnSol.returnNodeProposedSolution();
+				       	        
+				       	        System.out.println("Solution:" + sSolution);
+				       	        break;
 			            	case "dfs":
 			            		myString = "ab";
-			       		 // Create the problem
-			       	        myProblem = new DFSProblem(myString, lengthOfString);
-			       	        // Create the Search algorithm
-			       	        s = new DFSSearchAlgorithm();
-			       	        
-			       	        ptnSol = s.getSolutionFor(myProblem);
-			       	        methodCost = s.getMethodCost();
-			       	        sSolution = ptnSol == null ? "[No solution found]"
-			       	                : ptnSol.returnNodeProposedSolution();
-			       	        
-			       	        System.out.println("Solution:" + sSolution);
-			       	        break;
+				       		// Create the problem
+				       	        myProblem = new DFSProblem(myString, lengthOfString);
+				       	        // Create the Search algorithm
+				       	        s = new DFSSearchAlgorithm();
+				       	        
+				       	        ptnSol = s.getSolutionFor(myProblem);
+				       	        methodCost = s.getMethodCost();
+				       	        sSolution = ptnSol == null ? "[No solution found]"
+				       	                : ptnSol.returnNodeProposedSolution();
+				       	        
+				       	        System.out.println("Solution:" + sSolution);
+				       	        break;
 				}
 				
 				long endTime = System.nanoTime();
@@ -194,7 +194,7 @@ public class Main_v1
 						break;
 				}
 				startSolutionTime = System.nanoTime();
-				break;
+				break; //todelete
 			}	
 			writer.flush();
 		}
