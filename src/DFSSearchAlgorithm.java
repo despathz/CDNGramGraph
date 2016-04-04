@@ -22,7 +22,7 @@ public class DFSSearchAlgorithm implements ISearchAlgorithm<String>
 	        lNextCandidates.push(ptnCurrent); 
 	        methodCost++; //push 
 	        
-	        // If we have done less than 100K steps and we have not yet found a solution
+	        // If we have done less than 100M steps and we have not yet found a solution
 	        while ((iCnt++ < 100000000) && (!pToSolve.isSolution(ptnCurrent))) 
 	        {
 	       	 methodCost++; //isSolution
