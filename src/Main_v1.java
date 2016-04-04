@@ -38,7 +38,7 @@ public class Main_v1
 		 */
 		Integer totalSolutions = 0;
 		String file  = "";
-		file += "file_" + lengthOfString + "_" + dProbabilityOfRepetition + "_" + totalStrings + ".csv"; System.out.println(file); //the name of the file 
+		file += args[0] + "_file_" + lengthOfString + "_" + dProbabilityOfRepetition + "_" + totalStrings + ".csv"; System.out.println(file); //the name of the file 
 		FileWriter writer = new FileWriter(file);
 		writer.append("String");  
 		writer.append(','); writer.append("Probability Of Repetition");
@@ -124,50 +124,44 @@ public class Main_v1
 			IProblem<String> myProblem;
 			ISearchAlgorithm<String> s;
 			IProblemTreeNode<String> ptnSol;
+			IProblem<List<String>> myLSProblem;
+			ISearchAlgorithm<List<String>> sLS;
+			IProblemTreeNode<List<String>> ptnLSSol;
 			String sSolution;
 			
-			while (true) 
-			{
+			//while (true) 
+			//{
 				switch (args[0]) 
 				{
 			            	case "ls":
 			            		//new LocalSearch instance, which will be used to solve the decompression problem
-						EvaluatedLocalSearch newsearchLs = new EvaluatedLocalSearch(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, lengthOfString); 
-						
-						//Solve and time the CSP
 						startTime = System.nanoTime();
-						result = newsearchLs.lsAlgorithm();
-						methodCost = newsearchLs.getMethodCost();
-						//System.out.println("MethodCost is: " + methodCost);
-						break;
-			            	case "bfs":
-			            		myString = "ab";
-			       		 	// Create the problem
-				       	        myProblem = new BFSProblem(myString, lengthOfString);
-				       	        // Create the Search algorithm
-				       	        s = new BFSSearchAlgorithm();
-				       	        
-				       	        ptnSol = s.getSolutionFor(myProblem);
-				       	        methodCost = s.getMethodCost();
-				       	        sSolution = ptnSol == null ? "[No solution found]"
-				       	                : ptnSol.returnNodeProposedSolution();
-				       	        
-				       	        System.out.println("Solution:" + sSolution);
-				       	        break;
+			            		 // Create the problem
+			            		myLSProblem = new LocalSearchProblem(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, lengthOfString); 	
+			            	       // Create the Search algorithm
+			            		sLS = new LocalSearchAlgorithm();
+			            		ptnLSSol = sLS.getSolutionFor(myLSProblem);
+			       	       methodCost = sLS.getMethodCost();
+			       	       sSolution = ptnLSSol.toString() == null ? "[No solution found]"
+			       	                : ptnLSSol.returnNodeProposedSolution().toString();
+			       	        
+			       	       System.out.println("Solution:" + sSolution);
+			            		break;
 			            	case "dfs":
-			            		myString = "ab";
-				       		// Create the problem
-				       	        myProblem = new DFSProblem(myString, lengthOfString);
-				       	        // Create the Search algorithm
-				       	        s = new DFSSearchAlgorithm();
-				       	        
-				       	        ptnSol = s.getSolutionFor(myProblem);
-				       	        methodCost = s.getMethodCost();
-				       	        sSolution = ptnSol == null ? "[No solution found]"
-				       	                : ptnSol.returnNodeProposedSolution();
-				       	        
-				       	        System.out.println("Solution:" + sSolution);
-				       	        break;
+			            		
+			            		startTime = System.nanoTime();
+			       		 // Create the problem
+			       	        myProblem = new DFSProblem(myString, lengthOfString);
+			       	        // Create the Search algorithm
+			       	        s = new DFSSearchAlgorithm();
+			       	        
+			       	        ptnSol = s.getSolutionFor(myProblem);
+			       	        methodCost = s.getMethodCost();
+			       	        sSolution = ptnSol == null ? "[No solution found]"
+			       	                : ptnSol.returnNodeProposedSolution();
+			       	        
+			       	        System.out.println("Solution:" + sSolution);
+			       	        break;
 				}
 				
 				long endTime = System.nanoTime();
@@ -188,14 +182,14 @@ public class Main_v1
 				{
 					endSolutionTime = System.nanoTime();
 					solutionTime = endSolutionTime - startSolutionTime;
-					if (solutionTime < 1000000000L) //1 second
-						continue;
-					else //Could not find a new solution
-						break;
+//					if (solutionTime < 1000000000L) //1 second
+//						continue;
+//					else //Could not find a new solution
+//						break;
 				}
 				startSolutionTime = System.nanoTime();
-				break; //todelete
-			}	
+				//break;
+			//}	
 			writer.flush();
 		}
 		sc.close();

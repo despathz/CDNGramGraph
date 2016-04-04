@@ -12,50 +12,42 @@ public class DFSSearchAlgorithm implements ISearchAlgorithm<String>
 	@Override
 	public IProblemTreeNode<String> getSolutionFor(IProblem<String> pToSolve)
 	{
-		 // Initialize tree
-	        IProblemTree<String> ptMyTree = new DFSProblemTree();
+	        IProblemTree<String> ptMyTree = new DFSProblemTree(); // Initialize tree
 	        
 	        int iCnt = 0;
-	        // Start from the beginning of the tree
-	        IProblemTreeNode<String> ptnCurrent = ptMyTree.getRoot();
+	        IProblemTreeNode<String> ptnCurrent = ptMyTree.getRoot();  // Start from the beginning of the tree
+	        methodCost++; //getRoot
 	        
-	        // Initialize list of possible nodes
-	        //List<IProblemTreeNode<String>> lNextCandidates = new ArrayList<>();
-	        Stack<IProblemTreeNode<String>> lNextCandidates = new Stack<>();
-	        methodCost++; //add  lNextCandidates.add cost
+	        Stack<IProblemTreeNode<String>> lNextCandidates = new Stack<>(); // Initialize list of possible nodes
 	        lNextCandidates.push(ptnCurrent); 
+	        methodCost++; //push 
 	        
-	        // If we have done less than 10K steps and
-	        // we have not yet found a solution
-	        while ((iCnt++ < 100000) && (!pToSolve.isSolution(ptnCurrent))) 
+	        // If we have done less than 100K steps and we have not yet found a solution
+	        while ((iCnt++ < 100000000) && (!pToSolve.isSolution(ptnCurrent))) 
 	        {
-	       	 methodCost++; //isSolution() method cost
-	       	 // If we checked all cases
-	       	 if (lNextCandidates.size() == 0)
-	       	 {
-	       		 System.out.println("break");
+	       	 methodCost++; //isSolution
+	       	 
+	       	 if (lNextCandidates.size() == 0)  // If we checked all cases
 	       		 break;
-	       	 }
+	       	 methodCost++; //size
 	            
-	       	 // Get next node and make it current, IF IT EXISTS
-	       	 methodCost++; //lNextCandidates.pop cost
-	       	 ptnCurrent = lNextCandidates.pop(); 
+	       	 ptnCurrent = lNextCandidates.pop(); // Get next node and make it current, IF IT EXISTS
+	       	 methodCost++; //pop 
 	            
-	       	 // If the node is valid
-	       	 methodCost++; //isValid() method cost
-	       	 if (pToSolve.isValid(ptnCurrent))
-	       	 { // Add its children to the possible next steps
-	       	 	methodCost++; //lNextCandidates.addAll cost
-	       	 	for (IProblemTreeNode<String> p : pToSolve.getNextStatesFor(ptnCurrent))
+	       	 if (pToSolve.isValid(ptnCurrent))  // If the node is valid
+	       	 { 
+	       		 methodCost++; //isValid
+	       		
+	       	 	for (IProblemTreeNode<String> newNode : pToSolve.getNextStatesFor(ptnCurrent))  // Add its children to the possible next steps
 	       	 	{
-	       	 		//System.out.println(" + " + p.returnNodeProposedSolution());
-	       	 		lNextCandidates.push(p);
+	       	 		lNextCandidates.push(newNode);
+	       	 		methodCost++; //push
 	       	 	}
+	       	 	methodCost++; //getNextStatesFor
 	       	 }
 	        }
 	        
-	        // If we have a solution
-	        methodCost++; //isSolution() method cost
+	        methodCost++; //isSolution  // If we have a solution
 	        if (pToSolve.isSolution(ptnCurrent))
 	            return ptnCurrent; // Return it
 	        else

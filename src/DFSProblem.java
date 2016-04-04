@@ -46,20 +46,18 @@ public class DFSProblem implements IProblem<String>
 		String[] curStringStates = CHARS.split("");
 		List<String> lPossibleChars = Arrays.asList(curStringStates);
 		
-		//Init result list
-		List<IProblemTreeNode<String>> lsRes = new ArrayList<>();
-		//For every possible character
+		List<IProblemTreeNode<String>> lsRes = new ArrayList<>(); //Init result list
+		
 		int i = 0;
-		for (String sPossibleChar : lPossibleChars)
+		for (String sPossibleChar : lPossibleChars) //For every possible character
 		{
 			i++;
 			if (i == 1)
 				continue;
-			System.out.print(sPossibleChar + " ~ ");
-			// Create the corresponding new string
-		        String sTmp = p.returnNodeProposedSolution() + sPossibleChar;
-		        // Add created concatenation to results
-		        lsRes.add(0, new DFSStringProblemTreeNode(sTmp));
+			
+		       String sTmp = p.returnNodeProposedSolution() + sPossibleChar; // Create the corresponding new string
+		       
+		       lsRes.add(0, new DFSStringProblemTreeNode(sTmp)); // Add created concatenation to results
 		}
 		
 		return lsRes;
