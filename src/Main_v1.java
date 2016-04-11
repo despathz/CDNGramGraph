@@ -162,6 +162,21 @@ public class Main_v1
 			       	        
 			       	        System.out.println("Solution:" + sSolution);
 			       	        break;
+			            	case "csp_dfs":
+			            		
+			            		startTime = System.nanoTime();
+			       		 // Create the problem
+			       	        myProblem = new CSP_DFSProblem(lengthOfString, total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree);
+			       	        // Create the Search algorithm
+			       	        s = new CSP_DFSSearchAlgorithm();
+			       	        
+			       	        ptnSol = s.getSolutionFor(myProblem);
+			       	        methodCost = s.getMethodCost();
+			       	        sSolution = ptnSol == null ? "[No solution found]"
+			       	                : ptnSol.returnNodeProposedSolution();
+			       	        
+			       	        System.out.println("Solution:" + sSolution);
+			       	        break;
 				}
 				
 				long endTime = System.nanoTime();
