@@ -129,82 +129,78 @@ public class Main_v1
 			IProblemTreeNode<List<String>> ptnLSSol;
 			String sSolution;
 			
-			//while (true) 
-			//{
-				switch (args[0]) 
-				{
-			            	case "ls":
-			            		//new LocalSearch instance, which will be used to solve the decompression problem
-						startTime = System.nanoTime();
-			            		 // Create the problem
-			            		myLSProblem = new LocalSearchProblem(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, lengthOfString); 	
-			            	       // Create the Search algorithm
-			            		sLS = new LocalSearchAlgorithm();
-			            		ptnLSSol = sLS.getSolutionFor(myLSProblem);
-			       	       methodCost = sLS.getMethodCost();
-			       	       sSolution = ptnLSSol.toString() == null ? "[No solution found]"
-			       	                : ptnLSSol.returnNodeProposedSolution().toString();
-			       	        
-			       	       System.out.println("Solution:" + sSolution);
-			            		break;
-			            	case "dfs":
-			            		
-			            		startTime = System.nanoTime();
-			       		 // Create the problem
-			       	        myProblem = new DFSProblem(myString, lengthOfString);
-			       	        // Create the Search algorithm
-			       	        s = new DFSSearchAlgorithm();
-			       	        
-			       	        ptnSol = s.getSolutionFor(myProblem);
-			       	        methodCost = s.getMethodCost();
-			       	        sSolution = ptnSol == null ? "[No solution found]"
-			       	                : ptnSol.returnNodeProposedSolution();
-			       	        
-			       	        System.out.println("Solution:" + sSolution);
-			       	        break;
-			            	case "csp_dfs":
-			            		
-			            		startTime = System.nanoTime();
-			       		 // Create the problem
-			       	        myProblem = new CSP_DFSProblem(lengthOfString, total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree);
-			       	        // Create the Search algorithm
-			       	        s = new CSP_DFSSearchAlgorithm();
-			       	        
-			       	        ptnSol = s.getSolutionFor(myProblem);
-			       	        methodCost = s.getMethodCost();
-			       	        sSolution = ptnSol == null ? "[No solution found]"
-			       	                : ptnSol.returnNodeProposedSolution();
-			       	        
-			       	        System.out.println("Solution:" + sSolution);
-			       	        break;
-				}
-				
-				long endTime = System.nanoTime();
-				long duration = endTime - startTime;
-				
-				if (!solutions.contains(result.toString()))
-				{
-					totalSolutions++;
-					solutions.add(result.toString());
-					writer.append(myString);  //add the new string and its properities to the csv file
-					writer.append(','); writer.append(dProbabilityOfRepetition.toString());
-					writer.append(','); writer.append(Long.toString(duration));
-					writer.append(','); writer.append(totalSolutions.toString());
-					writer.append(','); writer.append(methodCost.toString());
-					writer.append('\n');	
-				}
-				else 
-				{
-					endSolutionTime = System.nanoTime();
-					solutionTime = endSolutionTime - startSolutionTime;
+			switch (args[0]) 
+			{
+	            	case "ls":
+			      	//new LocalSearch instance, which will be used to solve the decompression problem
+					startTime = System.nanoTime();
+			      	// Create the problem
+			      	myLSProblem = new LocalSearchProblem(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, lengthOfString); 	
+		      	      // Create the Search algorithm
+		      		sLS = new LocalSearchAlgorithm();
+		      		ptnLSSol = sLS.getSolutionFor(myLSProblem);
+			 	      methodCost = sLS.getMethodCost();
+			 	      sSolution = ptnLSSol.toString() == null ? "[No solution found]"
+			 	                : ptnLSSol.returnNodeProposedSolution().toString();
+			 	        
+			 	      System.out.println("Solution:" + sSolution);
+			      	break;
+	            	
+				case "dfs":
+			      	startTime = System.nanoTime();
+			 		// Create the problem
+			 	      myProblem = new DFSProblem(myString, lengthOfString);
+					// Create the Search algorithm
+					s = new DFSSearchAlgorithm();
+
+					ptnSol = s.getSolutionFor(myProblem);
+					methodCost = s.getMethodCost();
+					sSolution = ptnSol == null ? "[No solution found]"
+					    : ptnSol.returnNodeProposedSolution();
+
+					System.out.println("Solution:" + sSolution);
+					break;
+	            	case "csp_dfs":
+					startTime = System.nanoTime();
+					// Create the problem
+					myProblem = new CSP_DFSProblem(lengthOfString, total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree);
+					// Create the Search algorithm
+					s = new CSP_DFSSearchAlgorithm();
+
+					ptnSol = s.getSolutionFor(myProblem);
+					methodCost = s.getMethodCost();
+					sSolution = ptnSol == null ? "[No solution found]"
+					    : ptnSol.returnNodeProposedSolution();
+
+					System.out.println("Solution:" + sSolution);
+					break;
+			}
+			
+			long endTime = System.nanoTime();
+			long duration = endTime - startTime;
+			
+			if (!solutions.contains(result.toString()))
+			{
+				totalSolutions++;
+				solutions.add(result.toString());
+				writer.append(myString);  //add the new string and its properities to the csv file
+				writer.append(','); writer.append(dProbabilityOfRepetition.toString());
+				writer.append(','); writer.append(Long.toString(duration));
+				writer.append(','); writer.append(totalSolutions.toString());
+				writer.append(','); writer.append(methodCost.toString());
+				writer.append('\n');	
+			}
+			else 
+			{
+				endSolutionTime = System.nanoTime();
+				solutionTime = endSolutionTime - startSolutionTime;
 //					if (solutionTime < 1000000000L) //1 second
 //						continue;
 //					else //Could not find a new solution
 //						break;
-				}
-				startSolutionTime = System.nanoTime();
-				//break;
-			//}	
+			}
+			startSolutionTime = System.nanoTime();
+
 			writer.flush();
 		}
 		sc.close();
