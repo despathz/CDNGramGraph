@@ -41,7 +41,7 @@ public class CSP_DFSProblem implements IProblem<String>
 				return false;
 		}
 		
-		 List<String> arr = new ArrayList<String>();
+		 List<String> arr = new ArrayList<String>(); //create an arrayList to store the characters of the string 
 		 for (int z = 0; z < arrTmp.length(); z++)
 	       	arr.add(String.valueOf(arrTmp.charAt(z)));
 		/*
@@ -189,28 +189,21 @@ public class CSP_DFSProblem implements IProblem<String>
 					 continue;
 				}
 			       
-				/*
-				 * 4. For every two neighboring n-grams n i , n j of the text S, there is a directed edge e i =
-				 *	{v x , v y }, where 1 ≤ i, j, x, y ≤ l. The amount of times an n-gram n i is the neighbor of
-				 *	the n-gram n j is the weight w i of the edge e i 
-				 *
-				 *  checkWeight: a copy of the weighted_setEdges. It will be used to check if the amount of times an n-gram n i is the neighbor of
-				 *			    the n-gram n j is the weight w i of the edge e i
-				 *  
-				 */
+				//The 2 last added characters should be a directes edge
+
 				String strTemp = String.valueOf(sTmp.charAt(sTmp.length() - 2));
 				String str = String.valueOf(sTmp.charAt(sTmp.length() - 1));
 				Map<Map<String, String>, Double> checkWeight = new HashMap<Map<String, String>, Double>(); //create a copy of the weighted_setEdges
 				for (Entry<Map<String, String>, Double> e : weighted_setEdges.entrySet()) 
-				 {
+				{
 					Map <String, String> edg = new HashMap<String, String>();
 					edg = e.getKey();
 					checkWeight.put(edg, e.getValue());
-				 }
+				}
 				getNext = 0; 
-			       if(!setEdges.containsKey(str)) 
-				      getNext = 1;
-		     	       for (Map.Entry<String, String> e : setEdges.entrySet()) 
+				if(!setEdges.containsKey(str)) 
+					getNext = 1;
+				for (Map.Entry<String, String> e : setEdges.entrySet()) 
 				{
 					if (str== e.getKey() ) //right vertex of the edge is found
 					{
