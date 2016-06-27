@@ -72,7 +72,7 @@ public class Main_v1
 			System.out.println("New: " +  myString);
 			
 			String stop = "";
-			 // Min n-gram size and max n-gram size set to 1, and the dist parameter set to 1.
+			// Min n-gram size and max n-gram size set to 1, and the dist parameter set to 1.
 			DocumentNGramGraph dngGraph = new DocumentNGramGraph(1, 1, 1); 
 		
 			// Create the graph
@@ -121,6 +121,11 @@ public class Main_v1
 			long endSolutionTime, startTime = 0, solutionTime = 0; //timer for finding a new solution
 			long startSolutionTime = System.nanoTime();
 			
+			 for (Map.Entry<String, String> e : setEdges.entrySet()) 
+		 			System.out.print(e.getKey() + e.getValue() +  ", ");
+			 for (Map.Entry<String, Integer> e : weighted_degree.entrySet()) 
+				 System.out.print(e.getKey() + e.getValue() +  ", ");
+			
 			IProblem<String> myProblem;
 			ISearchAlgorithm<String> s;
 			IProblemTreeNode<String> ptnSol;
@@ -131,39 +136,56 @@ public class Main_v1
 			
 			switch (args[0]) 
 			{
-	            	case "ls":
-			      	//new LocalSearch instance, which will be used to solve the decompression problem
-					startTime = System.nanoTime();
-			      	// Create the problem
-			      	myLSProblem = new LocalSearchProblem(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, lengthOfString); 	
-		      	      // Create the Search algorithm
-		      		sLS = new LocalSearchAlgorithm();
-		      		ptnLSSol = sLS.getSolutionFor(myLSProblem);
-			 	      methodCost = sLS.getMethodCost();
-			 	      sSolution = ptnLSSol.toString() == null ? "[No solution found]"
-			 	                : ptnLSSol.returnNodeProposedSolution().toString();
-			 	        
-			 	      System.out.println("Solution:" + sSolution);
-			      	break;
-	            	
+		            	case "ls":
+				      	//new LocalSearch instance, which will be used to solve the decompression problem
+						startTime = System.nanoTime();
+				      	// Create the problem
+				      	myLSProblem = new LocalSearchProblem(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, lengthOfString); 	
+			      	      // Create the Search algorithm
+			      		sLS = new LocalSearchAlgorithm();
+			      		ptnLSSol = sLS.getSolutionFor(myLSProblem);
+				 	      methodCost = sLS.getMethodCost();
+				 	      sSolution = ptnLSSol.toString() == null ? "[No solution found]"
+				 	                : ptnLSSol.returnNodeProposedSolution().toString();
+				 	        
+				 	      System.out.println("Solution:" + sSolution);
+				      	break;
+		            	
 				case "dfs":
 			      	startTime = System.nanoTime();
 			 		// Create the problem
 			 	      myProblem = new DFSProblem(myString, lengthOfString);
 					// Create the Search algorithm
 					s = new DFSSearchAlgorithm();
-
+	
 					ptnSol = s.getSolutionFor(myProblem);
 					methodCost = s.getMethodCost();
 					sSolution = ptnSol == null ? "[No solution found]"
 					    : ptnSol.returnNodeProposedSolution();
-
+	
 					System.out.println("Solution:" + sSolution);
 					break;
-	            	case "csp_dfs":
+					
+		            	case "csp_dfs":
+						startTime = System.nanoTime();
+						// Create the problem
+						myProblem = new CSP_DFSProblem(lengthOfString, total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree);
+						// Create the Search algorithm
+						s = new CSP_DFSSearchAlgorithm();
+	
+						ptnSol = s.getSolutionFor(myProblem);
+						methodCost = s.getMethodCost();
+						sSolution = ptnSol == null ? "[No solution found]"
+						    : ptnSol.returnNodeProposedSolution();
+	
+						System.out.println("Solution:" + sSolution);
+						break;
+						
+		            	case "csp_varOrdering_dfs":
+		            		System.out.println("first heuristic");
 					startTime = System.nanoTime();
 					// Create the problem
-					myProblem = new CSP_DFSProblem(lengthOfString, total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree);
+					myProblem = new CSP_VarOrdering_DFSProblem(lengthOfString, total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree);
 					// Create the Search algorithm
 					s = new CSP_DFSSearchAlgorithm();
 
@@ -173,7 +195,7 @@ public class Main_v1
 					    : ptnSol.returnNodeProposedSolution();
 
 					System.out.println("Solution:" + sSolution);
-					break;
+					break;		
 			}
 			
 			long endTime = System.nanoTime();
