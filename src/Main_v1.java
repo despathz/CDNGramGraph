@@ -1,4 +1,8 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,6 +12,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 
+import gr.demokritos.iit.jinsect.utils;
 import gr.demokritos.iit.jinsect.documentModel.representations.DocumentNGramGraph;
 import salvo.jesus.graph.WeightedEdge;
 
@@ -31,6 +36,43 @@ public class Main_v1
 		Integer totalStrings = Integer.parseInt(sc.nextLine());
 		System.out.println("Please give probability of repetition for the current set of string: ");
 		Integer dProbabilityOfRepetition = Integer.parseInt(sc.nextLine());
+		System.out.println("Do you want to load an existing data file? Type yes or no ");
+		String loadfile = sc.nextLine();
+		Boolean loadingfile = false;
+		List <String> StringsFromFIle = new ArrayList<String>();
+		
+		if (loadfile.equals("yes"))
+		{
+			loadingfile = true;
+			System.out.println("Please type the name of tha file you want to load ");
+			String inputFile = "inputFiles/" + sc.nextLine();
+			System.out.println("Loading file " + inputFile);
+			try (BufferedReader bufferReader = new BufferedReader(new FileReader(inputFile)))
+			{ 
+				String line = "";
+				String csvSplitChar = ",";
+				while ((line =bufferReader.readLine()) != null)
+				{
+					String[] str = line.split(csvSplitChar);
+					StringsFromFIle.add(str[0]);
+				}
+				StringsFromFIle.remove(0); //Removing the header
+			}
+			catch (FileNotFoundException e)
+			{
+				    System.out.println(e);
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		else if (!loadfile.equals("no"))
+		{
+			System.out.println("An error occured: invalid answer!");
+			sc.close();
+			return;
+		}
 		
 		/* 
 		 * Creating the csv file 
@@ -42,33 +84,43 @@ public class Main_v1
 		FileWriter writer = new FileWriter(file);
 		writer.append("String");  
 		writer.append(','); writer.append("Probability Of Repetition");
-		writer.append(','); writer.append("Execution Time (ns)");
+		writer.append(','); writer.append("ExecutionTime");
 		writer.append(','); writer.append("Solutions Found");
-		writer.append(','); writer.append("Method Cost");
+		writer.append(','); writer.append("MethodCost");
 		writer.append('\n');
 		
 		for (int noString = 0; noString < totalStrings; noString++)
 		{
 			totalSolutions = 0;
 			String myString = ""; //the new string that will be generated
-			String mainChar = getRandomStringCharacters(); //select a main character from the available characters
-			for (int iCur = 0; iCur < lengthOfString; iCur++) //generating the new string 
+			
+			if (loadfile.equals("yes")) //get the next string from the file
 			{
-				int percent = (100 / lengthOfString) * iCur; 
-				if (percent <= dProbabilityOfRepetition) //if the probability is not correct add the main character to the string
-					myString+=mainChar;
-				else //the probability is achieved, select randomly the rest of the characters
+				myString = StringsFromFIle.get(0);
+				StringsFromFIle.remove(0);
+			}
+			else //create a new string 
+			{
+				String mainChar = getRandomStringCharacters(); //select a main character from the available characters
+				for (int iCur = 0; iCur < lengthOfString; iCur++) //generating the new string 
 				{
-					String newStr = "";
-					while (true)
+					int percent = (100 / lengthOfString) * iCur; 
+					if (percent <= dProbabilityOfRepetition) //if the probability is not correct add the main character to the string
+						myString+=mainChar;
+					else //the probability is achieved, select randomly the rest of the characters
 					{
-						newStr = getRandomStringCharacters(); 
-						if (!myString.contains(newStr)) //do not add the main character again
-							break;
+						String newStr = "";
+						while (true)
+						{
+							newStr = getRandomStringCharacters(); 
+							if (!myString.contains(newStr)) //do not add the main character again
+								break;
+						}
+						myString += newStr;
 					}
-					myString += newStr;
 				}
 			}
+			
 			System.out.println("New: " +  myString);
 			
 			String stop = "";
@@ -78,17 +130,21 @@ public class Main_v1
 			// Create the graph
 			dngGraph.setDataString(myString);
 		
+			/* The following command gets the first n-gram graph level (with the minimum n-gram
+			size) and renders it, using the utils package, as a DOT string */
+			System.out.println(utils.graphToDot(dngGraph.getGraphLevel(0), true));	
+			
 			//Getting total vertices and edges from the dngGraph
 			int total_vertices = dngGraph.getGraphLevel(0).getVerticesCount(); //total vertices
 			int total_edges = dngGraph.getGraphLevel(0).getEdgesCount(); //total edges
 		
 			/*
 			 * weighted_setEdges: A Hashmap that is used to keep the labels of the ends of each edge of the graph:
-			 * 				 <<Right End of the Edge, Left End of the Edge>, Weight of the Edge>
+			 * 				<<Right End of the Edge, Left End of the Edge>, Weight of the Edge>
 			 * weighted_degree: A Hashmap that contains the weighted degree of each vertex of the graph:
-			 * 				 HashMap<Vertex, Weighted Degree>
+			 * 				HashMap<Vertex, Weighted Degree>
 			 * setVertices: A Set that contains all the vertices of the graph:
-			 * 			Set <Vertex> 
+			 * 				Set <Vertex> 
 			 */
 			Iterator iIter = dngGraph.getGraphLevel(0).getEdgeSet().iterator();
 			Map<String, String> setEdges = new HashMap<String, String>();
@@ -138,10 +194,10 @@ public class Main_v1
 			{
 		            	case "ls":
 				      	//new LocalSearch instance, which will be used to solve the decompression problem
-						startTime = System.nanoTime();
+					startTime = System.nanoTime();
 				      	// Create the problem
 				      	myLSProblem = new LocalSearchProblem(total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree, lengthOfString); 	
-			      	      // Create the Search algorithm
+			      	       // Create the Search algorithm
 			      		sLS = new LocalSearchAlgorithm();
 			      		ptnLSSol = sLS.getSolutionFor(myLSProblem);
 				 	      methodCost = sLS.getMethodCost();
@@ -171,7 +227,7 @@ public class Main_v1
 						// Create the problem
 						myProblem = new CSP_DFSProblem(lengthOfString, total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree);
 						// Create the Search algorithm
-						s = new CSP_DFSSearchAlgorithm();
+						s = new DFSSearchAlgorithm();
 	
 						ptnSol = s.getSolutionFor(myProblem);
 						methodCost = s.getMethodCost();
@@ -187,7 +243,7 @@ public class Main_v1
 					// Create the problem
 					myProblem = new CSP_VarOrdering_DFSProblem(lengthOfString, total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree);
 					// Create the Search algorithm
-					s = new CSP_DFSSearchAlgorithm();
+					s = new DFSSearchAlgorithm();
 
 					ptnSol = s.getSolutionFor(myProblem);
 					methodCost = s.getMethodCost();
@@ -195,7 +251,35 @@ public class Main_v1
 					    : ptnSol.returnNodeProposedSolution();
 
 					System.out.println("Solution:" + sSolution);
-					break;		
+					break;	
+		            	case "bfs":
+				      	startTime = System.nanoTime();
+				 		// Create the problem
+				 	      myProblem = new BFSProblem(myString, lengthOfString);
+						// Create the Search algorithm
+						s = new BFSSearchAlgorithm();
+		
+						ptnSol = s.getSolutionFor(myProblem);
+						methodCost = s.getMethodCost();
+						sSolution = ptnSol == null ? "[No solution found]"
+						    : ptnSol.returnNodeProposedSolution();
+		
+						System.out.println("Solution:" + sSolution);
+						break;
+		            	case "csp_bfs":
+					startTime = System.nanoTime();
+					// Create the problem
+					myProblem = new CSP_BFSProblem(lengthOfString, total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree);
+					// Create the Search algorithm
+					s = new BFSSearchAlgorithm();
+
+					ptnSol = s.getSolutionFor(myProblem);
+					methodCost = s.getMethodCost();
+					sSolution = ptnSol == null ? "[No solution found]"
+					    : ptnSol.returnNodeProposedSolution();
+
+					System.out.println("Solution:" + sSolution);
+					break;
 			}
 			
 			long endTime = System.nanoTime();

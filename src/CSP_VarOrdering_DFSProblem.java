@@ -123,10 +123,37 @@ public class CSP_VarOrdering_DFSProblem implements IProblem<String>
 	@Override
 	public List<IProblemTreeNode<String>> getNextStatesFor(IProblemTreeNode<String> p)
 	{
-		String[] curStringStates = CHARS.split("");
-		List<String> lPossibleChars = Arrays.asList(curStringStates);
-		//
+		String curStrStates = "";
 		
+		Map<String, Integer> sortedWeightedDegree = new HashMap<String, Integer>();
+
+		sortedWeightedDegree = fixWeightedDegree(p); //fix the weight of the vertices that are in use
+//		print for debugging
+		for (Map.Entry<String, Integer> entry : sortedWeightedDegree.entrySet())
+		{
+			System.out.println("Key 1: " + entry.getKey() + " value 1: " + entry.getValue());
+		}
+		
+//		if  (sortedWeightedDegree.isEmpty())
+//			sortedWeightedDegree = weighted_degree;
+		sortedWeightedDegree =  sortByValue(sortedWeightedDegree);
+		
+		//print for debugging
+		for (Map.Entry<String, Integer> entry : sortedWeightedDegree.entrySet())
+		{
+			System.out.println("Key: " + entry.getKey() + " value: " + entry.getValue());
+		}
+		
+		//only vertices from the graph can be inserted
+		Iterator<String> verticesIterator = sortedWeightedDegree.keySet().iterator();
+		while (verticesIterator.hasNext())
+		{
+			String curVertex = verticesIterator.next();
+			curStrStates += curVertex;
+		}
+		
+		String[] curStringStates = curStrStates.split("");
+		List<String> lPossibleChars = Arrays.asList(curStringStates);
 		List<IProblemTreeNode<String>> lsRes = new ArrayList<>(); //Init result list
 		
 		int i = 0, getNext = 0;
@@ -190,7 +217,7 @@ public class CSP_VarOrdering_DFSProblem implements IProblem<String>
 					 continue;
 				}
 			       
-				//The 2 last added characters should be a directes edge
+				//The 2 last added characters should be a directed edge
 
 				String strTemp = String.valueOf(sTmp.charAt(sTmp.length() - 2));
 				String str = String.valueOf(sTmp.charAt(sTmp.length() - 1));
@@ -233,10 +260,51 @@ public class CSP_VarOrdering_DFSProblem implements IProblem<String>
 					continue;
 				}
 		       }
-		       lsRes.add(0, new CSP_DFSStringProblemTreeNode(sTmp)); // Add created concatenation to results
+		       System.out.println("Proposed: " + sTmp);
+		       lsRes.add(0, new DFSStringProblemTreeNode(sTmp)); // Add created concatenation to results
 		}
-		
 		return lsRes;
 	}
 
+	@SuppressWarnings("hiding")
+	public <String, Integer extends Comparable<? super Integer>> Map<String, Integer> sortByValue(Map<String, Integer> map) 
+	{
+		List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer>>(map.entrySet());
+		Collections.sort(list, new Comparator<Map.Entry<String, Integer>>()
+		{
+			public int compare(Map.Entry<String, Integer> a, Map.Entry<String, Integer> b)
+			{
+				return (a.getValue()).compareTo(b.getValue());
+			}
+		});
+		Map<String, Integer> result = new LinkedHashMap<>();
+		for (Map.Entry<String, Integer> entry: list)
+			result.put(entry.getKey(), entry.getValue());
+		return result;
+	}
+	
+	public Map<String, Integer> fixWeightedDegree(IProblemTreeNode<String> p)
+	{
+		Map<String, Integer> fixedWeightedDegree = new HashMap<String, Integer>();
+		
+		String[] usedVertices = p.returnNodeProposedSolution().split("");
+		
+		int ignoreFirstChar = 0;
+		for (String str : usedVertices)
+		{
+			ignoreFirstChar++;
+			if (ignoreFirstChar == 1) //split first char is empty
+				continue;
+			fixedWeightedDegree.put(str, weighted_degree.get(str) - 1);
+		}
+		for (String str : weighted_degree.keySet())
+		{
+			if (fixedWeightedDegree.containsKey(str))
+				continue;
+			fixedWeightedDegree.put(str, weighted_degree.get(str));
+		}
+		
+		return fixedWeightedDegree;
+	}
+	
 }
