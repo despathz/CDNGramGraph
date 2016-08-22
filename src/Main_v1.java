@@ -122,6 +122,7 @@ public class Main_v1
 			}
 			
 			System.out.println("New: " +  myString);
+			myString = "Hi Deppie";
 			
 			String stop = "";
 			// Min n-gram size and max n-gram size set to 1, and the dist parameter set to 1.
@@ -132,7 +133,7 @@ public class Main_v1
 		
 			/* The following command gets the first n-gram graph level (with the minimum n-gram
 			size) and renders it, using the utils package, as a DOT string */
-			System.out.println(utils.graphToDot(dngGraph.getGraphLevel(0), true));	
+			//System.out.println(utils.graphToDot(dngGraph.getGraphLevel(0), true));	
 			
 			//Getting total vertices and edges from the dngGraph
 			int total_vertices = dngGraph.getGraphLevel(0).getVerticesCount(); //total vertices
@@ -235,8 +236,7 @@ public class Main_v1
 						    : ptnSol.returnNodeProposedSolution();
 	
 						System.out.println("Solution:" + sSolution);
-						break;
-						
+						break;	
 		            	case "csp_varOrdering_dfs":
 		            		System.out.println("first heuristic");
 					startTime = System.nanoTime();
@@ -251,25 +251,70 @@ public class Main_v1
 					    : ptnSol.returnNodeProposedSolution();
 
 					System.out.println("Solution:" + sSolution);
-					break;	
+					break;
+		            	case "csp_possibility_dfs":
+		            		System.out.println("second heuristic");
+					startTime = System.nanoTime();
+					// Create the problem
+					myProblem = new CSP_PossibilityHeuristic_DFSProblem(lengthOfString, total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree);
+					// Create the Search algorithm
+					s = new DFSSearchAlgorithm();
+
+					ptnSol = s.getSolutionFor(myProblem);
+					methodCost = s.getMethodCost();
+					sSolution = ptnSol == null ? "[No solution found]"
+					    : ptnSol.returnNodeProposedSolution();
+
+					System.out.println("Solution:" + sSolution);
+					break;
 		            	case "bfs":
 				      	startTime = System.nanoTime();
-				 		// Create the problem
-				 	      myProblem = new BFSProblem(myString, lengthOfString);
-						// Create the Search algorithm
-						s = new BFSSearchAlgorithm();
-		
-						ptnSol = s.getSolutionFor(myProblem);
-						methodCost = s.getMethodCost();
-						sSolution = ptnSol == null ? "[No solution found]"
-						    : ptnSol.returnNodeProposedSolution();
-		
-						System.out.println("Solution:" + sSolution);
-						break;
+			 		// Create the problem
+			 	      myProblem = new BFSProblem(myString, lengthOfString);
+					// Create the Search algorithm
+					s = new BFSSearchAlgorithm();
+	
+					ptnSol = s.getSolutionFor(myProblem);
+					methodCost = s.getMethodCost();
+					sSolution = ptnSol == null ? "[No solution found]"
+					    : ptnSol.returnNodeProposedSolution();
+	
+					System.out.println("Solution:" + sSolution);
+					break;
 		            	case "csp_bfs":
 					startTime = System.nanoTime();
 					// Create the problem
 					myProblem = new CSP_BFSProblem(lengthOfString, total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree);
+					// Create the Search algorithm
+					s = new BFSSearchAlgorithm();
+
+					ptnSol = s.getSolutionFor(myProblem);
+					methodCost = s.getMethodCost();
+					sSolution = ptnSol == null ? "[No solution found]"
+					    : ptnSol.returnNodeProposedSolution();
+
+					System.out.println("Solution:" + sSolution);
+					break;
+		            	case "csp_varOrdering_bfs":
+		            		System.out.println("first heuristic");
+					startTime = System.nanoTime();
+					// Create the problem
+					myProblem = new CSP_VarOrdering_BFSProblem(lengthOfString, total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree);
+					// Create the Search algorithm
+					s = new BFSSearchAlgorithm();
+
+					ptnSol = s.getSolutionFor(myProblem);
+					methodCost = s.getMethodCost();
+					sSolution = ptnSol == null ? "[No solution found]"
+					    : ptnSol.returnNodeProposedSolution();
+
+					System.out.println("Solution:" + sSolution);
+					break;
+		            	case "csp_possibility_bfs":
+		            		System.out.println("second heuristic");
+					startTime = System.nanoTime();
+					// Create the problem
+					myProblem = new CSP_PossibilityHeuristic_BFSProblem(lengthOfString, total_edges, total_vertices, setEdges, setVertices, weighted_setEdges, weighted_degree);
 					// Create the Search algorithm
 					s = new BFSSearchAlgorithm();
 

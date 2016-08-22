@@ -2,8 +2,8 @@ import java.util.*;
 import java.util.Map.Entry;
 
 
-public class CSP_VarOrdering_DFSProblem implements IProblem<String>
-{	
+public class CSP_PossibilityHeuristic_BFSProblem implements IProblem<String>
+{
 	protected Integer curTreeHeight;
 	protected int edges, vertices, getAllAppearances;
 	protected Map <String, String> setEdges;
@@ -11,7 +11,7 @@ public class CSP_VarOrdering_DFSProblem implements IProblem<String>
 	protected Map<Map<String, String>, Double> weighted_setEdges;
 	protected Map<String, Integer> weighted_degree;
 	
-	public CSP_VarOrdering_DFSProblem(Integer curTrHeight, int edg, int vert, Map<String, String> setE, Set<String> setV, Map<Map<String, String>, Double> w_d, Map<String, Integer> labelA)
+	public CSP_PossibilityHeuristic_BFSProblem(Integer curTrHeight, int edg, int vert, Map<String, String> setE, Set<String> setV, Map<Map<String, String>, Double> w_d, Map<String, Integer> labelA)
 	{
 		this.curTreeHeight = curTrHeight;
 		this.edges = edg;
@@ -101,7 +101,7 @@ public class CSP_VarOrdering_DFSProblem implements IProblem<String>
 	@Override
 	public boolean isValid(IProblemTreeNode<String> p)
 	{
-		return !(p.returnNodeProposedSolution().length() + 1 > curTreeHeight);
+		return !(p.returnNodeProposedSolution().length() > curTreeHeight);
 	}
 
 	@Override
@@ -117,18 +117,46 @@ public class CSP_VarOrdering_DFSProblem implements IProblem<String>
 		}
 	}
 
+	/*
+	 *  The probability heuristic is based on the estimated probability of every vertex of the n-gram graph.
+	 *  For every vertex V of the n-gram graph, a probability P(V) is defined, where:
+	 *  P(V) = f(1 / WeightOfVertex(V)) * possibilityFactor
+	 *   - weightOfVertex(V) = (Integer) the weight of the vertex V
+	 *   - possibilityFactor = (Double) 1 / (1/WeightOfVertex(V1) + ... + (1 / WeightOfVertex(Vz))), where V1...Vz are all the vertices of the n-gram graph
+	 * 
+	 *  Every time the getNextStatesFor function is called, the probability of every vertex is calculated. 
+	 *  The vertex that has the smallest probability is selected for the next state of the problem.
+	 */
 	@Override
 	public List<IProblemTreeNode<String>> getNextStatesFor(IProblemTreeNode<String> p)
 	{
 		String curStrStates = "";
+		Map<String, Integer> fixWeightedDegree = new HashMap<String, Integer>(); //calculate the weight of the vertices 
+		double numeratorOfPossibilityFactor = 1.0;
+		double denominatorOfPossibilityFactor = 0.0;
+		double possibilityFactor = 0.0;
 		
-		Map<String, Integer> sortedWeightedDegree = new HashMap<String, Integer>();
-
-		sortedWeightedDegree = fixWeightedDegree(p); //fix the weight of the vertices that are in use
-		sortedWeightedDegree =  sortByValue(sortedWeightedDegree);
+		fixWeightedDegree = fixWeightedDegree(p); //fix the weight of the vertices that are in use
 		
-		//only vertices from the graph can be inserted
-		Iterator<String> verticesIterator = sortedWeightedDegree.keySet().iterator();
+		for (String str : fixWeightedDegree.keySet())
+		{
+			if (fixWeightedDegree.get(str) != 0)
+				denominatorOfPossibilityFactor += (1.0 / fixWeightedDegree.get(str));
+		}
+		possibilityFactor = numeratorOfPossibilityFactor / denominatorOfPossibilityFactor; 
+		
+		Map<String, Double> sorted = new HashMap<String, Double>(); //<Vertex, Possibility>
+		for (String str: fixWeightedDegree.keySet())
+		{
+			if (fixWeightedDegree.get(str) != 0)
+				sorted.put(str, (1.0 / fixWeightedDegree.get(str))*possibilityFactor);
+			else
+				sorted.put(str, 0.0);
+		}
+		
+		sorted =  sortedByPossibility(sorted); //sorting all the vertices by weight
+		
+		Iterator<String> verticesIterator = sorted.keySet().iterator(); //only vertices from the graph can be inserted
 		while (verticesIterator.hasNext())
 		{
 			String curVertex = verticesIterator.next();
@@ -222,29 +250,37 @@ public class CSP_VarOrdering_DFSProblem implements IProblem<String>
 					continue;
 				}
 		       }
-		       System.out.println("Proposed: " + sTmp);
-		       lsRes.add(0, new DFSStringProblemTreeNode(sTmp)); // Add created concatenation to results
+		       lsRes.add(new BFSStringProblemTreeNode(sTmp)); // Add created concatenation to results
 		}
+		
 		return lsRes;
 	}
 
+	/*
+	 *  Sort the vertices of the graph according to their probability
+	 */
 	@SuppressWarnings("hiding")
-	public <String, Integer extends Comparable<? super Integer>> Map<String, Integer> sortByValue(Map<String, Integer> map) 
+	public <String, Double extends Comparable<? super Double>> Map<String, Double> sortedByPossibility(Map<String, Double> map) 
 	{
-		List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer>>(map.entrySet());
-		Collections.sort(list, new Comparator<Map.Entry<String, Integer>>()
+		List<Map.Entry<String, Double>> list = new LinkedList<Map.Entry<String, Double>>(map.entrySet());
+		Collections.sort(list, new Comparator<Map.Entry<String, Double>>()
 		{
-			public int compare(Map.Entry<String, Integer> a, Map.Entry<String, Integer> b)
+			public int compare(Map.Entry<String, Double> a, Map.Entry<String, Double> b)
 			{
 				return (a.getValue()).compareTo(b.getValue());
 			}
 		});
-		Map<String, Integer> result = new LinkedHashMap<>();
-		for (Map.Entry<String, Integer> entry: list)
+		Map<String, Double> result = new LinkedHashMap<>();
+		for (Map.Entry<String, Double> entry: list)
 			result.put(entry.getKey(), entry.getValue());
 		return result;
 	}
 	
+	/*
+	 *  Each time the "GetNextStatesFor" function is executed, an IProblemTreeNode already exists. 
+	 *  This node contains some vertices of the graph. The role of the following function is to calculate the weight of the vertices,
+	 *  by reducing the weight of the used vertices.
+	 */
 	public Map<String, Integer> fixWeightedDegree(IProblemTreeNode<String> p)
 	{
 		Map<String, Integer> fixedWeightedDegree = new HashMap<String, Integer>();

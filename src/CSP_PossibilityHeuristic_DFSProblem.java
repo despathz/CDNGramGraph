@@ -4,9 +4,6 @@ import java.util.Map.Entry;
 
 public class CSP_PossibilityHeuristic_DFSProblem implements IProblem<String>
 {
-	private static final String CHARS =
-			"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzαβγδεζηθικλμνξπστυφχψωΓΔΘΛΞΠΣΦΨΩ!@#$%&";
-	
 	protected Integer curTreeHeight;
 	protected int edges, vertices, getAllAppearances;
 	protected Map <String, String> setEdges;
@@ -120,25 +117,35 @@ public class CSP_PossibilityHeuristic_DFSProblem implements IProblem<String>
 		}
 	}
 
+	/*
+	 *  The probability heuristic is based on the estimated probability of every vertex of the n-gram graph.
+	 *  For every vertex V of the n-gram graph, a probability P(V) is defined, where:
+	 *  P(V) = f(1 / WeightOfVertex(V)) * possibilityFactor
+	 *   - weightOfVertex(V) = (Integer) the weight of the vertex V
+	 *   - possibilityFactor = (Double) 1 / (1/WeightOfVertex(V1) + ... + (1 / WeightOfVertex(Vz))), where V1...Vz are all the vertices of the n-gram graph
+	 * 
+	 *  Every time the getNextStatesFor function is called, the probability of every vertex is calculated. 
+	 *  The vertex that has the smallest probability is selected for the next state of the problem.
+	 */
 	@Override
 	public List<IProblemTreeNode<String>> getNextStatesFor(IProblemTreeNode<String> p)
-	{
+	{	
 		String curStrStates = "";
-		
-		Map<String, Integer> fixWeightedDegree = new HashMap<String, Integer>();
+		Map<String, Integer> fixWeightedDegree = new HashMap<String, Integer>(); //calculate the weight of the vertices 
+		double numeratorOfPossibilityFactor = 1.0;
+		double denominatorOfPossibilityFactor = 0.0;
+		double possibilityFactor = 0.0;
 		
 		fixWeightedDegree = fixWeightedDegree(p); //fix the weight of the vertices that are in use
 		
-		double numeratorOfPossibilityFactor = 1.0;
-		double denominatorOfPossibilityFactor = 0.0;
 		for (String str : fixWeightedDegree.keySet())
 		{
 			if (fixWeightedDegree.get(str) != 0)
 				denominatorOfPossibilityFactor += (1.0 / fixWeightedDegree.get(str));
 		}
-		double possibilityFactor = numeratorOfPossibilityFactor / denominatorOfPossibilityFactor; 
-		System.out.println("paronomastis: " + denominatorOfPossibilityFactor);
-		System.out.println("theta: " + possibilityFactor);
+		possibilityFactor = numeratorOfPossibilityFactor / denominatorOfPossibilityFactor; 
+//		System.out.println("paronomastis: " + denominatorOfPossibilityFactor);
+//		System.out.println("theta: " + possibilityFactor);
 		
 		Map<String, Double> sorted = new HashMap<String, Double>(); //<Vertex, Possibility>
 		for (String str: fixWeightedDegree.keySet())
@@ -149,14 +156,9 @@ public class CSP_PossibilityHeuristic_DFSProblem implements IProblem<String>
 				sorted.put(str, 0.0);
 		}
 		
-		sorted =  sortedByPossibility(sorted); //sorting by weight all the vertices
+		sorted =  sortedByPossibility(sorted); //sorting all the vertices by weight
 		
-		//print for debugging
-		for (Map.Entry<String, Double> entry : sorted.entrySet())
-			System.out.println("Key: " + entry.getKey() + " value: " + entry.getValue());
-		
-		//only vertices from the graph can be inserted
-		Iterator<String> verticesIterator = sorted.keySet().iterator();
+		Iterator<String> verticesIterator = sorted.keySet().iterator(); //only vertices from the graph can be inserted
 		while (verticesIterator.hasNext())
 		{
 			String curVertex = verticesIterator.next();
@@ -165,7 +167,7 @@ public class CSP_PossibilityHeuristic_DFSProblem implements IProblem<String>
 		
 		String[] curStringStates = curStrStates.split("");
 		List<String> lPossibleChars = Arrays.asList(curStringStates);
-		List<IProblemTreeNode<String>> lsRes = new ArrayList<>(); //Init result list
+		List<IProblemTreeNode<String>> lsRes = new ArrayList<>(); //Initialize result list
 		
 		int i = 0, getNext = 0;
 		for (String sPossibleChar : lPossibleChars) //For every possible character
@@ -180,28 +182,7 @@ public class CSP_PossibilityHeuristic_DFSProblem implements IProblem<String>
 		       for (int z = 0; z < sTmp.length(); z++)
 		       	arr.add(String.valueOf(sTmp.charAt(z)));
 		       
-		       if (sTmp.length() == 1)
-		       {
-			       //the label we are about to store belongs to the set of labels
-			       Set<String> myset = weighted_degree.keySet();
-				Iterator<String> it = myset.iterator();
-				while (it.hasNext())
-				{
-					if (!arr.contains(it.next()))
-						getNext = 1;
-					else
-					{
-						getNext = 0;
-						break;
-					}
-				}
-				if (getNext == 1)
-				{
-					 getNext = 0;
-					 continue;
-				}
-		       }
-		       else
+		       if (sTmp.length() != 1)
 		       {
 			       /*
 				 * 2. Every label l ∈ L(V ) should appear at most a number of times equal to the weighted
@@ -271,12 +252,15 @@ public class CSP_PossibilityHeuristic_DFSProblem implements IProblem<String>
 					continue;
 				}
 		       }
-		       System.out.println("Proposed: " + sTmp);
+		       //System.out.println("Proposed: " + sTmp);
 		       lsRes.add(0, new DFSStringProblemTreeNode(sTmp)); // Add created concatenation to results
 		}
 		return lsRes;
 	}
 
+	/*
+	 *  Sort the vertices of the graph according to their probability
+	 */
 	@SuppressWarnings("hiding")
 	public <String, Double extends Comparable<? super Double>> Map<String, Double> sortedByPossibility(Map<String, Double> map) 
 	{
@@ -294,6 +278,11 @@ public class CSP_PossibilityHeuristic_DFSProblem implements IProblem<String>
 		return result;
 	}
 	
+	/*
+	 *  Each time the "GetNextStatesFor" function is executed, an IProblemTreeNode already exists. 
+	 *  This node contains some vertices of the graph. The role of the following function is to calculate the weight of the vertices,
+	 *  by reducing the weight of the used vertices.
+	 */
 	public Map<String, Integer> fixWeightedDegree(IProblemTreeNode<String> p)
 	{
 		Map<String, Integer> fixedWeightedDegree = new HashMap<String, Integer>();

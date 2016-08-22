@@ -2,8 +2,8 @@ import java.util.*;
 import java.util.Map.Entry;
 
 
-public class CSP_VarOrdering_DFSProblem implements IProblem<String>
-{	
+public class CSP_VarOrdering_BFSProblem implements IProblem<String>
+{
 	protected Integer curTreeHeight;
 	protected int edges, vertices, getAllAppearances;
 	protected Map <String, String> setEdges;
@@ -11,7 +11,7 @@ public class CSP_VarOrdering_DFSProblem implements IProblem<String>
 	protected Map<Map<String, String>, Double> weighted_setEdges;
 	protected Map<String, Integer> weighted_degree;
 	
-	public CSP_VarOrdering_DFSProblem(Integer curTrHeight, int edg, int vert, Map<String, String> setE, Set<String> setV, Map<Map<String, String>, Double> w_d, Map<String, Integer> labelA)
+	public CSP_VarOrdering_BFSProblem(Integer curTrHeight, int edg, int vert, Map<String, String> setE, Set<String> setV, Map<Map<String, String>, Double> w_d, Map<String, Integer> labelA)
 	{
 		this.curTreeHeight = curTrHeight;
 		this.edges = edg;
@@ -101,7 +101,7 @@ public class CSP_VarOrdering_DFSProblem implements IProblem<String>
 	@Override
 	public boolean isValid(IProblemTreeNode<String> p)
 	{
-		return !(p.returnNodeProposedSolution().length() + 1 > curTreeHeight);
+		return !(p.returnNodeProposedSolution().length() > curTreeHeight);
 	}
 
 	@Override
@@ -222,9 +222,9 @@ public class CSP_VarOrdering_DFSProblem implements IProblem<String>
 					continue;
 				}
 		       }
-		       System.out.println("Proposed: " + sTmp);
-		       lsRes.add(0, new DFSStringProblemTreeNode(sTmp)); // Add created concatenation to results
+		       lsRes.add(new BFSStringProblemTreeNode(sTmp)); // Add created concatenation to results
 		}
+		
 		return lsRes;
 	}
 
@@ -268,5 +268,4 @@ public class CSP_VarOrdering_DFSProblem implements IProblem<String>
 		
 		return fixedWeightedDegree;
 	}
-	
 }
