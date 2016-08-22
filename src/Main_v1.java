@@ -122,7 +122,6 @@ public class Main_v1
 			}
 			
 			System.out.println("New: " +  myString);
-			myString = "Hi Deppie";
 			
 			String stop = "";
 			// Min n-gram size and max n-gram size set to 1, and the dist parameter set to 1.
